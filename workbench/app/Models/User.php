@@ -10,6 +10,8 @@ class User extends AuthUser implements WithAuditLog
 {
     use HasAuditLog;
 
+    public $table = 'users';
+
     protected $guarded = [];
 
     protected function casts(): array

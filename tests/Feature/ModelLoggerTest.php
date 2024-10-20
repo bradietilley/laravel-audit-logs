@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Hash;
+use Workbench\App\Models\Staff;
 use Workbench\App\Models\User;
 
 test('generic activity logger will record updates', function () {
@@ -112,4 +113,35 @@ test('generic activity logger will not record superfluous fields', function () {
     ]);
 
     expect($user->auditLogs()->count())->toBe(0);
+});
+
+test('a model can specify a custom logger', function () {
+    $user = Staff::withoutEvents(function () {
+        return Staff::create([
+            'name' => 'John Doe',
+            'email' => 'dojathej@example.org',
+            'password' => Hash::make('b8b8e49c4t3gr4'),
+        ]);
+    });
+
+    expect($user->auditLogs()->count())->toBe(0);
+
+    $user->update([
+        'name' => 'New Name',
+    ]);
+
+    expect($user->auditLogs()->count())->toBe(1);
+    expect($user->auditLogs->first()->only([
+        'model_type',
+        'model_id',
+        'action',
+        'ip',
+        'type',
+    ]))->toBe([
+        'model_type' => Staff::class,
+        'model_id' => $user->id,
+        'action' => 'StaffLogger custom log',
+        'ip' => '127.0.0.1',
+        'type' => 'activity',
+    ]);
 });
