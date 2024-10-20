@@ -1,8 +1,8 @@
 <?php
 
-namespace BradieTilley\AuditLog\Contracts;
+namespace BradieTilley\AuditLogs\Contracts;
 
-use BradieTilley\AuditLog\Loggers\ModelLogger;
+use BradieTilley\AuditLogs\Loggers\ModelLogger;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 interface WithAuditLog

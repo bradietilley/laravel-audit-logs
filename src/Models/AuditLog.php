@@ -1,10 +1,10 @@
 <?php
 
-namespace BradieTilley\AuditLog\Models;
+namespace BradieTilley\AuditLogs\Models;
 
-use BradieTilley\AuditLog\AuditLogConfig;
-use BradieTilley\AuditLog\Casts\IpAddressCast;
-use BradieTilley\AuditLog\Observers\AuditLogObserver;
+use BradieTilley\AuditLogs\AuditLogConfig;
+use BradieTilley\AuditLogs\Casts\IpAddressCast;
+use BradieTilley\AuditLogs\Observers\AuditLogObserver;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;

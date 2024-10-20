@@ -1,7 +1,7 @@
 <?php
 
 use App\Models\User;
-use BradieTilley\AuditLog\Models\AuditLog;
+use BradieTilley\AuditLogs\Models\AuditLog;
 
 return [
     'models' => [

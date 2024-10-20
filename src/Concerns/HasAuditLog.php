@@ -1,11 +1,11 @@
 <?php
 
-namespace BradieTilley\AuditLog\Concerns;
+namespace BradieTilley\AuditLogs\Concerns;
 
-use BradieTilley\AuditLog\AuditLogConfig;
-use BradieTilley\AuditLog\Contracts\WithAuditLog;
-use BradieTilley\AuditLog\Loggers\ModelLogger;
-use BradieTilley\AuditLog\Observers\HasAuditLogObserver;
+use BradieTilley\AuditLogs\AuditLogConfig;
+use BradieTilley\AuditLogs\Contracts\WithAuditLog;
+use BradieTilley\AuditLogs\Loggers\ModelLogger;
+use BradieTilley\AuditLogs\Observers\HasAuditLogObserver;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 

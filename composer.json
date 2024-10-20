@@ -28,8 +28,8 @@
     },
     "autoload": {
         "psr-4": {
-            "BradieTilley\\AuditLog\\": "src/",
-            "BradieTilley\\AuditLog\\Database\\Factories\\": "database/factories/"
+            "BradieTilley\\AuditLogs\\": "src/",
+            "BradieTilley\\AuditLogs\\Database\\Factories\\": "database/factories/"
         }
     },
     "autoload-dev": {
@@ -48,7 +48,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "BradieTilley\\AuditLog\\AuditLogServiceProvider"
+                "BradieTilley\\AuditLogs\\AuditLogServiceProvider"
             ]
         }
     },

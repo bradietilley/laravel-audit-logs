@@ -1,8 +1,8 @@
 <?php
 
-namespace BradieTilley\AuditLog\Observers;
+namespace BradieTilley\AuditLogs\Observers;
 
-use BradieTilley\AuditLog\Models\AuditLog;
+use BradieTilley\AuditLogs\Models\AuditLog;
 use Illuminate\Support\Str;
 
 class AuditLogObserver

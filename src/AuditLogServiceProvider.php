@@ -1,6 +1,6 @@
 <?php
 
-namespace BradieTilley\AuditLog;
+namespace BradieTilley\AuditLogs;
 
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;

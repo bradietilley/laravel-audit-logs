@@ -2,7 +2,7 @@
 
 namespace Workbench\App\Models\Loggers;
 
-use BradieTilley\AuditLog\Loggers\ModelLogger;
+use BradieTilley\AuditLogs\Loggers\ModelLogger;
 
 class StaffLogger extends ModelLogger
 {

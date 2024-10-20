@@ -1,8 +1,8 @@
 <?php
 
-namespace BradieTilley\AuditLog;
+namespace BradieTilley\AuditLogs;
 
-use BradieTilley\AuditLog\Models\AuditLog;
+use BradieTilley\AuditLogs\Models\AuditLog;
 use Illuminate\Foundation\Auth\User;
 
 class AuditLogConfig

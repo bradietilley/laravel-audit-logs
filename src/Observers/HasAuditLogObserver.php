@@ -1,8 +1,8 @@
 <?php
 
-namespace BradieTilley\AuditLog\Observers;
+namespace BradieTilley\AuditLogs\Observers;
 
-use BradieTilley\AuditLog\Contracts\WithAuditLog;
+use BradieTilley\AuditLogs\Contracts\WithAuditLog;
 use Illuminate\Database\Eloquent\Model;
 
 class HasAuditLogObserver

@@ -1,6 +1,6 @@
 <?php
 
-namespace BradieTilley\AuditLog\Casts;
+namespace BradieTilley\AuditLogs\Casts;
 
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Database\Eloquent\Model;

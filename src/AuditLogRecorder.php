@@ -1,9 +1,9 @@
 <?php
 
-namespace BradieTilley\AuditLog;
+namespace BradieTilley\AuditLogs;
 
-use BradieTilley\AuditLog\Contracts\WithAuditLog;
-use BradieTilley\AuditLog\Models\AuditLog;
+use BradieTilley\AuditLogs\Contracts\WithAuditLog;
+use BradieTilley\AuditLogs\Models\AuditLog;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\User;
 use Illuminate\Http\Request;

@@ -17,8 +17,8 @@ Add the following interface and trait to the model you wish to attach audit logs
 
 namespace App\Models;
 
-use BradieTilley\AuditLog\Contracts\WithAuditLog;
-use BradieTilley\AuditLog\Concerns\HasAuditLog;
+use BradieTilley\AuditLogs\Contracts\WithAuditLog;
+use BradieTilley\AuditLogs\Concerns\HasAuditLog;
 
 class User extends Model implements WithAuditLog
 {
@@ -26,7 +26,7 @@ class User extends Model implements WithAuditLog
 }
 ```
 
-By default this will use a rudimentary `BradieTilley\AuditLog\Loggers\ModelLogger` logger instance to track eloquent events for this model, including creation, deletion, updates and restorations.
+By default this will use a rudimentary `BradieTilley\AuditLogs\Loggers\ModelLogger` logger instance to track eloquent events for this model, including creation, deletion, updates and restorations.
 
 Optionally, create a customer `ModelLogger` class for your model to customise the logs that get written, such as if you wish to customise how specific fields are written.
 
@@ -35,7 +35,7 @@ Optionally, create a customer `ModelLogger` class for your model to customise th
 
 namespace App\AuditLoggers;
 
-use BradieTilley\AuditLog\Loggers\AbstractAuditLogger;
+use BradieTilley\AuditLogs\Loggers\AbstractAuditLogger;
 
 class UserAuditLogger extends AbstractAuditLogger
 {
@@ -54,8 +54,8 @@ Now configure your model to utilise this `ModelLogger`:
 namespace App\Models;
 
 use App\AuditLoggers\UserAuditLogger;
-use BradieTilley\AuditLog\Contracts\WithAuditLog;
-use BradieTilley\AuditLog\Concerns\HasAuditLog;
+use BradieTilley\AuditLogs\Contracts\WithAuditLog;
+use BradieTilley\AuditLogs\Concerns\HasAuditLog;
 
 class User extends Model implements WithAuditLog
 {

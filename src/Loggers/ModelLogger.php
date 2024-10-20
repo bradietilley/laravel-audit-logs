@@ -1,12 +1,12 @@
 <?php
 
-namespace BradieTilley\AuditLog\Loggers;
+namespace BradieTilley\AuditLogs\Loggers;
 
 use BackedEnum;
-use BradieTilley\AuditLog\AuditLogConfig;
-use BradieTilley\AuditLog\AuditLogRecorder;
-use BradieTilley\AuditLog\Contracts\WithAuditLog;
-use BradieTilley\AuditLog\Models\AuditLog;
+use BradieTilley\AuditLogs\AuditLogConfig;
+use BradieTilley\AuditLogs\AuditLogRecorder;
+use BradieTilley\AuditLogs\Contracts\WithAuditLog;
+use BradieTilley\AuditLogs\Models\AuditLog;
 use Carbon\Carbon;
 use DateTimeInterface;
 use Illuminate\Database\Eloquent\Model;

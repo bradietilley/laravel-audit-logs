@@ -1,6 +1,6 @@
 <?php
 
-use BradieTilley\AuditLog\Casts\IpAddressCast;
+use BradieTilley\AuditLogs\Casts\IpAddressCast;
 use Workbench\App\Models\User;
 
 test('ip addresses can be cast to binary', function (string $ip) {

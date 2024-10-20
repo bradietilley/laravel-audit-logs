@@ -2,9 +2,9 @@
 
 namespace Workbench\App\Models;
 
-use BradieTilley\AuditLog\Concerns\HasAuditLog;
-use BradieTilley\AuditLog\Contracts\WithAuditLog;
-use BradieTilley\AuditLog\Loggers\ModelLogger;
+use BradieTilley\AuditLogs\Concerns\HasAuditLog;
+use BradieTilley\AuditLogs\Contracts\WithAuditLog;
+use BradieTilley\AuditLogs\Loggers\ModelLogger;
 use Workbench\App\Models\Loggers\StaffLogger;
 
 class Staff extends User implements WithAuditLog

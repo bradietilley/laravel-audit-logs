@@ -1,5 +1,5 @@
 providers:
-  - BradieTilley\AuditLog\AuditLogServiceProvider
+  - BradieTilley\AuditLogs\AuditLogServiceProvider
 
 migrations:
   - workbench/database/migrations
