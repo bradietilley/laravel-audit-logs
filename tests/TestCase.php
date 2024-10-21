@@ -13,6 +13,8 @@ abstract class TestCase extends TestbenchTestCase
     use WithWorkbench;
     use RefreshDatabase;
 
+    protected static mixed $latestResponse;
+
     protected function setUp(): void
     {
         parent::setUp();

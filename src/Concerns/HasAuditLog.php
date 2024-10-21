@@ -5,6 +5,7 @@ namespace BradieTilley\AuditLogs\Concerns;
 use BradieTilley\AuditLogs\AuditLogConfig;
 use BradieTilley\AuditLogs\Contracts\WithAuditLog;
 use BradieTilley\AuditLogs\Loggers\ModelLogger;
+use BradieTilley\AuditLogs\Models\AuditLog;
 use BradieTilley\AuditLogs\Observers\HasAuditLogObserver;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
@@ -15,6 +16,9 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
  */
 trait HasAuditLog
 {
+    /**
+     * @return MorphMany<AuditLog, static>
+     */
     public function auditLogs(): MorphMany
     {
         return $this->morphMany(

@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Foundation\Auth\User;
 
 /**
  * @property-read int $id
@@ -50,6 +51,9 @@ class AuditLog extends Model
 
     /**
      * Scope audit logs by the given IP
+     *
+     * @param Builder<static> $query
+     * @return Builder<static>
      */
     public function scopeIp(Builder $query, string $ip): Builder
     {
@@ -67,11 +71,17 @@ class AuditLog extends Model
         return $query->where('ip', $binary);
     }
 
+    /**
+     * @return BelongsTo<User, $this>
+     */
     public function user(): BelongsTo
     {
         return $this->belongsTo(AuditLogConfig::getUserModel(), 'user_id');
     }
 
+    /**
+     * @return MorphTo<Model, $this>
+     */
     public function model(): MorphTo
     {
         return $this->morphTo('model', 'model_type', 'model_id');
