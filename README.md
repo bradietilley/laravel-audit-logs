@@ -35,9 +35,9 @@ Optionally, create a customer `ModelLogger` class for your model to customise th
 
 namespace App\AuditLoggers;
 
-use BradieTilley\AuditLogs\Loggers\AbstractAuditLogger;
+use BradieTilley\AuditLogs\Loggers\ModelLogger;
 
-class UserAuditLogger extends AbstractAuditLogger
+class UserAuditLogger extends ModelLogger
 {
     protected function updated(): void
     {

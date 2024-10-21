@@ -2,7 +2,6 @@
 
 namespace BradieTilley\AuditLogs;
 
-use BradieTilley\AuditLogs\Contracts\WithAuditLog;
 use BradieTilley\AuditLogs\Models\AuditLog;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\User;
@@ -32,27 +31,26 @@ class AuditLogRecorder
         return app(AuditLogRecorder::class);
     }
 
-    public function record(Model&WithAuditLog $model, string $action, string $type, array $attributes = []): AuditLog
+    public function record(?Model $model, string $action, string $type = AuditLog::TYPE_ACTIVITY, array $data = []): AuditLog
     {
         $class = AuditLogConfig::getAuditLogModel();
 
         $auditLogModel = $class::create([
-            'model_type' => $model->getMorphClass(),
-            'model_id' => $model->getKey(),
+            'model_type' => $model?->getMorphClass(),
+            'model_id' => $model?->getKey(),
             'user_id' => $this->getUserId(),
             'ip' => $this->getRequestIp(),
             'action' => $action,
             'type' => $type,
-            'data' => [],
-            ...$attributes,
+            'data' => $data,
         ]);
 
-        $this->writeLog($auditLogModel, $attributes);
+        $this->writeLog($auditLogModel, $data);
 
         return $auditLogModel;
     }
 
-    protected function writeLog(AuditLog $log, array $attributes): void
+    protected function writeLog(AuditLog $log, array $data): void
     {
         $data = [
             'log' => [
@@ -70,7 +68,7 @@ class AuditLogRecorder
                 'email' => $this->getUserEmail(),
                 'name' => $this->getUserName(),
             ],
-            'attributes' => $attributes,
+            'data' => $data,
         ];
 
         $this->logger->info($log->action, $data);

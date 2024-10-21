@@ -7,8 +7,13 @@ return [
     'models' => [
         'user' => User::class,
         'audit_log' => AuditLog::class,
-        'audit_identity' => AuditIdentity::class,
     ],
 
     'log_channel' => 'audit_logs',
+
+    /**
+     * The attribute to include in all default authentication logs such as login,
+     * password reset, etc.
+     */
+    'user_identifier' => 'email',
 ];

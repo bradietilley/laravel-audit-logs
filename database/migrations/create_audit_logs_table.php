@@ -13,7 +13,7 @@ return new class () extends Migration {
             $table->ulid('ulid')->unique();
 
             $table->foreignIdFor(AuditLogConfig::getUserModel(), 'user_id')->nullable();
-            $table->morphs('model', 'model');
+            $table->nullableMorphs('model', 'model');
 
             $table->enum('type', [
                 AuditLogConfig::getAuditLogModel()::TYPE_AUDIT,

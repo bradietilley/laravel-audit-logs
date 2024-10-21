@@ -22,7 +22,8 @@ abstract class TestCase extends TestbenchTestCase
 
     public function getEnvironmentSetUp($app)
     {
-        $app['config']->set('activity-logs.models.user', User::class);
+        $app['config']->set('auth.providers.users.model', User::class);
+        $app['config']->set('audit-logs.models.user', User::class);
 
         $app['config']->set('database.default', 'testbench');
         $app['config']->set('database.connections.testbench', [

@@ -1,18 +1,18 @@
 {
-    "name": "bradietilley/laravel-activity-logs",
+    "name": "bradietilley/laravel-audit-logs",
     "description": "Log changes to your models in your Laravel application",
     "keywords": [
         "laravel",
-        "activity-logs",
+        "audit-logs",
         "logging",
         "audit"
     ],
-    "homepage": "https://github.com/bradietilley/activity-logs",
+    "homepage": "https://github.com/bradietilley/audit-logs",
     "license": "MIT",
     "authors": [
         {
-            "name": "BradieTilley",
-            "email": "development@bradietilley.com.au",
+            "name": "Bradie Tilley",
+            "email": "bradietilley@gmail.com",
             "role": "Developer"
         }
     ],

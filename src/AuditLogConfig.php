@@ -9,7 +9,7 @@ class AuditLogConfig
 {
     protected static function get(string $key, mixed $default = null): mixed
     {
-        return config("activity-logs.{$key}", $default);
+        return config("audit-logs.{$key}", $default);
     }
 
     /**
@@ -34,5 +34,14 @@ class AuditLogConfig
     public static function getLogChannel(): ?string
     {
         return static::get('log_channel');
+    }
+
+    /**
+     * The attribute to include in all default authentication logs such as login,
+     * password reset, etc.
+     */
+    public static function getUserIdentifier(): string
+    {
+        return static::get('user_identifier');
     }
 }
