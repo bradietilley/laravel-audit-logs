@@ -39,8 +39,8 @@ test('requests are logged', function () {
         'type' => 'activity',
     ]);
 
-    expect($admin->performedAuditLogs()->count())->toBe(1);
-    expect($admin->performedAuditLogs->first()->only([
+    expect($admin->actionLogs()->count())->toBe(1);
+    expect($admin->actionLogs->first()->only([
         'model_type',
         'model_id',
         'action',

@@ -10,9 +10,18 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 interface WithAuditLog
 {
     /**
+     * Get audit logs relating to this resource.
+     *
      * @return MorphMany<AuditLog, Model>
      */
     public function auditLogs(): MorphMany;
+
+    /**
+     * Get audit logs that were actioned by this user/resource.
+     *
+     * @return MorphMany<AuditLog, Model>
+     */
+    public function actionLogs(): MorphMany;
 
     public function getAuditLogger(): ModelLogger;
 }

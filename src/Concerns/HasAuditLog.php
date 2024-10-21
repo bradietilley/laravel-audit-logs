@@ -17,6 +17,8 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 trait HasAuditLog
 {
     /**
+     * Get audit logs relating to this resource.
+     *
      * @return MorphMany<AuditLog, static>
      */
     public function auditLogs(): MorphMany
@@ -26,6 +28,21 @@ trait HasAuditLog
             'model',
             'model_type',
             'model_id',
+        )->orderByDesc('id');
+    }
+
+    /**
+     * Get audit logs that were actioned by this user/resource.
+     *
+     * @return MorphMany<AuditLog, static>
+     */
+    public function actionLogs(): MorphMany
+    {
+        return $this->morphMany(
+            AuditLogConfig::getAuditLogModel(),
+            'user',
+            'user_type',
+            'user_id',
         )->orderByDesc('id');
     }
 
