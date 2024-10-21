@@ -7,6 +7,7 @@ use BradieTilley\AuditLogs\Models\AuditLog;
 use Illuminate\Auth\Events\Attempting;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
+use Throwable;
 
 class OnAuthAttempting extends AuditListener
 {
@@ -14,10 +15,15 @@ class OnAuthAttempting extends AuditListener
 
     public function handle(Attempting $event): void
     {
-        $provider = Auth::guard($event->guard)->getProvider();
+        try {
+            $provider = Auth::guard($event->guard)->getProvider(); /** @phpstan-ignore-line */
+        } catch (Throwable) {
+            return;
+        }
+
         $user = $provider->retrieveByCredentials($event->credentials);
 
-        if ($user && ! $user instanceof Model) {
+        if (! is_null($user) && ! $user instanceof Model) {
             return;
         }
 

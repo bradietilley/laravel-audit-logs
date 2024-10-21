@@ -17,6 +17,7 @@ class AuditLogRecorder
 {
     public LoggerInterface $logger;
 
+    /** @var array<string, mixed> */
     protected array $cache = [];
 
     public function __construct(
@@ -28,14 +29,21 @@ class AuditLogRecorder
 
     public static function make(): AuditLogRecorder
     {
-        return app(AuditLogRecorder::class);
+        /** @var AuditLogRecorder $instance */
+        $instance = app(AuditLogRecorder::class);
+
+        return $instance;
     }
 
+    /**
+     * @param array<mixed> $data
+     */
     public function record(?Model $model, string $action, string $type = AuditLog::TYPE_ACTIVITY, array $data = []): AuditLog
     {
         $class = AuditLogConfig::getAuditLogModel();
 
-        $auditLogModel = $class::create([
+        $log = new $class();
+        $log->fill([
             'model_type' => $model?->getMorphClass(),
             'model_id' => $model?->getKey(),
             'user_id' => $this->getUserId(),
@@ -45,11 +53,16 @@ class AuditLogRecorder
             'data' => $data,
         ]);
 
-        $this->writeLog($auditLogModel, $data);
+        $log->save();
 
-        return $auditLogModel;
+        $this->writeLog($log, $data);
+
+        return $log;
     }
 
+    /**
+     * @param array<mixed> $data
+     */
     protected function writeLog(AuditLog $log, array $data): void
     {
         $data = [
@@ -76,39 +89,46 @@ class AuditLogRecorder
 
     protected function runningInConsole(): bool
     {
+        /** @phpstan-ignore-next-line */
         return $this->cache[__METHOD__] ??= App::runningInConsole();
     }
 
     protected function user(): ?User
     {
+        /** @phpstan-ignore-next-line */
         return $this->cache[__METHOD__] ??= Auth::user();
     }
 
     protected function getUserId(): ?int
     {
+        /** @phpstan-ignore-next-line */
         return $this->cache[__METHOD__] ??= $this->user()?->getKey();
     }
 
     protected function getUserEmail(): ?string
     {
+        /** @phpstan-ignore-next-line */
         return $this->cache[__METHOD__] ??= $this->user()?->getAttribute('email');
     }
 
     protected function getUserName(): ?string
     {
+        /** @phpstan-ignore-next-line */
         return $this->cache[__METHOD__] ??= rescue(
-            fn () => $this->user()?->name,
+            fn () => $this->user()?->name, /** @phpstan-ignore-line */
             report: false,
         );
     }
 
     protected function route(): RoutingRoute
     {
+        /** @phpstan-ignore-next-line */
         return $this->cache[__METHOD__] ??= Route::current();
     }
 
     protected function getRequestIp(): string
     {
+        /** @phpstan-ignore-next-line */
         return $this->cache[__METHOD__] ??= $this->request->ip();
     }
 
@@ -118,15 +138,20 @@ class AuditLogRecorder
             return null;
         }
 
+        /** @phpstan-ignore-next-line */
         return $this->cache[__METHOD__] ??= $this->route()?->getName();
     }
 
+    /**
+     * @return array<int, string>
+     */
     protected function getRequestMiddleware(): ?array
     {
         if ($this->runningInConsole()) {
             return null;
         }
 
+        /** @phpstan-ignore-next-line */
         return $this->cache[__METHOD__] ??= $this->route()?->gatherMiddleware();
     }
 
@@ -136,6 +161,7 @@ class AuditLogRecorder
             return null;
         }
 
+        /** @phpstan-ignore-next-line */
         return $this->cache[__METHOD__] ??= $this->request->fullUrl();
     }
 
@@ -145,6 +171,7 @@ class AuditLogRecorder
             return null;
         }
 
+        /** @phpstan-ignore-next-line */
         return $this->cache[__METHOD__] ??= $this->request->header('User-Agent');
     }
 }

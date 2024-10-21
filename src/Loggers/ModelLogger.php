@@ -5,7 +5,6 @@ namespace BradieTilley\AuditLogs\Loggers;
 use BackedEnum;
 use BradieTilley\AuditLogs\AuditLogConfig;
 use BradieTilley\AuditLogs\AuditLogRecorder;
-use BradieTilley\AuditLogs\Contracts\WithAuditLog;
 use BradieTilley\AuditLogs\Models\AuditLog;
 use Carbon\Carbon;
 use DateTimeInterface;
@@ -33,10 +32,12 @@ class ModelLogger
 
     /**
      * Cache for models and their human readable names
+     *
+     * @var array<class-string, string>
      */
     protected static array $modelNames = [];
 
-    final public function __construct(public readonly Model&WithAuditLog $model)
+    final public function __construct(public readonly Model $model)
     {
         $this->logger = Log::channel(AuditLogConfig::getLogChannel());
         $this->modelName = $this->getDefaultModelName();
@@ -134,7 +135,7 @@ class ModelLogger
 
         if (is_string($value)) {
             $value = strip_tags($value);
-            $value = trim(preg_replace('/\s+/', ' ', $value));
+            $value = trim(preg_replace('/\s+/', ' ', $value) ?: '');
 
             if ($this->isTooLong($value)) {
                 $this->push("{$label} updated");
@@ -193,7 +194,7 @@ class ModelLogger
      */
     protected function deleted(): void
     {
-        $this->recordNow("{$this->modelName} deleted");
+        $this->recordSingleLog("{$this->modelName} deleted");
     }
 
     /**
@@ -224,7 +225,7 @@ class ModelLogger
      * Proxy methods calls to the model
      *
      * @param  string  $name
-     * @param  array  $arguments
+     * @param  array<mixed>  $arguments
      */
     public function __call($name, $arguments): mixed
     {
@@ -243,6 +244,8 @@ class ModelLogger
 
     /**
      * Shortcut for wasChanged() on the model
+     *
+     * @param string|array<string, mixed>|null $attributes
      */
     public function wasChanged(string|array|null $attributes = null): bool
     {

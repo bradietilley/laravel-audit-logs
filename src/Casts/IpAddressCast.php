@@ -4,7 +4,13 @@ namespace BradieTilley\AuditLogs\Casts;
 
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Database\Eloquent\Model;
+use InvalidArgumentException;
 
+/**
+ * Casts an IP address to and from binary format.
+ *
+ * @implements CastsAttributes<string|null, string|null>
+ */
 class IpAddressCast implements CastsAttributes
 {
     /**
@@ -16,6 +22,10 @@ class IpAddressCast implements CastsAttributes
     {
         if (empty($value)) {
             return null;
+        }
+
+        if (! is_string($value)) {
+            throw new InvalidArgumentException("IP address must be a string");
         }
 
         return inet_ntop($value) ?: null;
@@ -30,6 +40,10 @@ class IpAddressCast implements CastsAttributes
     {
         if (empty($value)) {
             return null;
+        }
+
+        if (! is_string($value)) {
+            throw new InvalidArgumentException("IP address must be a string");
         }
 
         return inet_pton($value) ?: null;

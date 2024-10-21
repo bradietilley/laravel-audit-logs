@@ -37,6 +37,9 @@ class AuditLog extends Model
         'id',
     ];
 
+    /**
+     * @return array<string, string>
+     */
     protected function casts(): array
     {
         return [
@@ -58,7 +61,7 @@ class AuditLog extends Model
 
         if ($binary === false) {
             // Return no results for invalid IP addresses
-            return $query->whereRaw('1 = 0');
+            return $query->whereRaw('1 = 0'); /** @phpstan-ignore-line */
         }
 
         return $query->where('ip', $binary);

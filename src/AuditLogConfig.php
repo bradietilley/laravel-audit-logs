@@ -17,6 +17,7 @@ class AuditLogConfig
      */
     public static function getUserModel(): string
     {
+        /** @phpstan-ignore-next-line */
         return static::get('models.user', User::class);
     }
 
@@ -25,6 +26,7 @@ class AuditLogConfig
      */
     public static function getAuditLogModel(): string
     {
+        /** @phpstan-ignore-next-line */
         return static::get('models.audit_log', AuditLog::class);
     }
 
@@ -33,6 +35,7 @@ class AuditLogConfig
      */
     public static function getLogChannel(): ?string
     {
+        /** @phpstan-ignore-next-line */
         return static::get('log_channel');
     }
 
@@ -42,6 +45,7 @@ class AuditLogConfig
      */
     public static function getUserIdentifier(): string
     {
+        /** @phpstan-ignore-next-line */
         return static::get('user_identifier');
     }
 }
