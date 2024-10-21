@@ -4,14 +4,14 @@ namespace BradieTilley\AuditLogs\Listeners;
 
 use BradieTilley\AuditLogs\AuditLogConfig;
 use BradieTilley\AuditLogs\Models\AuditLog;
-use Illuminate\Auth\Events\PasswordResetLinkSent;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Database\Eloquent\Model;
 
-class OnAuthPasswordResetLinkSent extends AuditListener
+class OnAuthRegistered extends AuditListener
 {
-    public const ACTION = 'Password reset link sent';
+    public const ACTION = 'User registered';
 
-    public function handle(PasswordResetLinkSent $event): void
+    public function handle(Registered $event): void
     {
         $user = $event->user;
 
@@ -23,7 +23,7 @@ class OnAuthPasswordResetLinkSent extends AuditListener
 
         $this->recorder->record($user, static::ACTION, AuditLog::TYPE_AUDIT, [
             'event' => [
-                $field => $user->getAttribute($field),
+                $field => $event->credentials[$field] ?? $user->getAttribute($field),
             ],
         ]);
     }

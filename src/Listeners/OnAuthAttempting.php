@@ -5,6 +5,9 @@ namespace BradieTilley\AuditLogs\Listeners;
 use BradieTilley\AuditLogs\AuditLogConfig;
 use BradieTilley\AuditLogs\Models\AuditLog;
 use Illuminate\Auth\Events\Attempting;
+use Illuminate\Auth\RequestGuard;
+use Illuminate\Auth\SessionGuard;
+use Illuminate\Auth\TokenGuard;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 use Throwable;
@@ -15,9 +18,19 @@ class OnAuthAttempting extends AuditListener
 
     public function handle(Attempting $event): void
     {
+        $provider = null;
+
         try {
-            $provider = Auth::guard($event->guard)->getProvider(); /** @phpstan-ignore-line */
+            $guard = Auth::guard($event->guard);
+
+            if ($guard instanceof RequestGuard || $guard instanceof SessionGuard || $guard instanceof TokenGuard) {
+                $provider = $guard->getProvider();
+            }
         } catch (Throwable) {
+            //
+        }
+
+        if ($provider === null) {
             return;
         }
 

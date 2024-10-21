@@ -90,31 +90,38 @@ class AuditLogRecorder
     protected function runningInConsole(): bool
     {
         /** @phpstan-ignore-next-line */
-        return $this->cache[__METHOD__] ??= App::runningInConsole();
+        return $this->cache[__FUNCTION__] ??= App::runningInConsole();
     }
 
-    protected function user(): ?User
+    public function user(): ?User
     {
         /** @phpstan-ignore-next-line */
-        return $this->cache[__METHOD__] ??= Auth::user();
+        return $this->cache[__FUNCTION__] ??= Auth::user();
+    }
+
+    public function setUser(?User $user): static
+    {
+        $this->cache['user'] = $user;
+
+        return $this;
     }
 
     protected function getUserId(): ?int
     {
         /** @phpstan-ignore-next-line */
-        return $this->cache[__METHOD__] ??= $this->user()?->getKey();
+        return $this->cache[__FUNCTION__] ??= $this->user()?->getKey();
     }
 
     protected function getUserEmail(): ?string
     {
         /** @phpstan-ignore-next-line */
-        return $this->cache[__METHOD__] ??= $this->user()?->getAttribute('email');
+        return $this->cache[__FUNCTION__] ??= $this->user()?->getAttribute('email');
     }
 
     protected function getUserName(): ?string
     {
         /** @phpstan-ignore-next-line */
-        return $this->cache[__METHOD__] ??= rescue(
+        return $this->cache[__FUNCTION__] ??= rescue(
             fn () => $this->user()?->name, /** @phpstan-ignore-line */
             report: false,
         );
@@ -123,13 +130,13 @@ class AuditLogRecorder
     protected function route(): RoutingRoute
     {
         /** @phpstan-ignore-next-line */
-        return $this->cache[__METHOD__] ??= Route::current();
+        return $this->cache[__FUNCTION__] ??= Route::current();
     }
 
     protected function getRequestIp(): string
     {
         /** @phpstan-ignore-next-line */
-        return $this->cache[__METHOD__] ??= $this->request->ip();
+        return $this->cache[__FUNCTION__] ??= $this->request->ip();
     }
 
     protected function getRequestRoute(): ?string
@@ -139,7 +146,7 @@ class AuditLogRecorder
         }
 
         /** @phpstan-ignore-next-line */
-        return $this->cache[__METHOD__] ??= $this->route()?->getName();
+        return $this->cache[__FUNCTION__] ??= $this->route()?->getName();
     }
 
     /**
@@ -152,7 +159,7 @@ class AuditLogRecorder
         }
 
         /** @phpstan-ignore-next-line */
-        return $this->cache[__METHOD__] ??= $this->route()?->gatherMiddleware();
+        return $this->cache[__FUNCTION__] ??= $this->route()?->gatherMiddleware();
     }
 
     protected function getRequestPath(): ?string
@@ -162,7 +169,7 @@ class AuditLogRecorder
         }
 
         /** @phpstan-ignore-next-line */
-        return $this->cache[__METHOD__] ??= $this->request->fullUrl();
+        return $this->cache[__FUNCTION__] ??= $this->request->fullUrl();
     }
 
     protected function getRequestUserAgent(): ?string
@@ -172,6 +179,6 @@ class AuditLogRecorder
         }
 
         /** @phpstan-ignore-next-line */
-        return $this->cache[__METHOD__] ??= $this->request->header('User-Agent');
+        return $this->cache[__FUNCTION__] ??= $this->request->header('User-Agent');
     }
 }

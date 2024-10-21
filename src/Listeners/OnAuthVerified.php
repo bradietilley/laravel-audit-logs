@@ -4,14 +4,14 @@ namespace BradieTilley\AuditLogs\Listeners;
 
 use BradieTilley\AuditLogs\AuditLogConfig;
 use BradieTilley\AuditLogs\Models\AuditLog;
-use Illuminate\Auth\Events\PasswordResetLinkSent;
+use Illuminate\Auth\Events\Verified;
 use Illuminate\Database\Eloquent\Model;
 
-class OnAuthPasswordResetLinkSent extends AuditListener
+class OnAuthVerified extends AuditListener
 {
-    public const ACTION = 'Password reset link sent';
+    public const ACTION = 'Email verification successful';
 
-    public function handle(PasswordResetLinkSent $event): void
+    public function handle(Verified $event): void
     {
         $user = $event->user;
 
