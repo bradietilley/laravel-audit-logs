@@ -21,6 +21,7 @@ test('logs are written for Illuminate\Auth\Events\Login', function () {
 
     expect($user->auditLogs()->count())->toBe(1);
     expect($user->auditLogs()->first()->only([
+        'user_type',
         'user_id',
         'model_type',
         'model_id',
@@ -28,6 +29,7 @@ test('logs are written for Illuminate\Auth\Events\Login', function () {
         'action',
         'data',
     ]))->toBe([
+        'user_type' => null,
         'user_id' => null,
         'model_type' => User::class,
         'model_id' => $user->id,

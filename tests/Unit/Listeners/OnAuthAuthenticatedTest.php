@@ -1,6 +1,6 @@
 <?php
 
-use BradieTilley\AuditLogs\AuditLogRecorder;
+use BradieTilley\AuditLogs\AuditLogger;
 use Illuminate\Auth\Events\Authenticated;
 use Illuminate\Support\Facades\Event;
 use Workbench\App\Models\User;
@@ -14,7 +14,7 @@ test('user is preloaded during Illuminate\Auth\Events\Authenticated', function (
         ]),
     );
 
-    $recorder = AuditLogRecorder::make();
+    $recorder = AuditLogger::make();
 
     $cache = (new ReflectionProperty($recorder, 'cache'))->getValue($recorder);
     expect($cache)->not->toHaveKey('user');

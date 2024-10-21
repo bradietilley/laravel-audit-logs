@@ -3,7 +3,6 @@
 namespace BradieTilley\AuditLogs;
 
 use BradieTilley\AuditLogs\Models\AuditLog;
-use Illuminate\Foundation\Auth\User;
 
 class AuditLogConfig
 {
@@ -13,15 +12,8 @@ class AuditLogConfig
     }
 
     /**
-     * @return class-string<User>
-     */
-    public static function getUserModel(): string
-    {
-        /** @phpstan-ignore-next-line */
-        return static::get('models.user', User::class);
-    }
-
-    /**
+     * Get the audit log model to use
+     *
      * @return class-string<AuditLog>
      */
     public static function getAuditLogModel(): string

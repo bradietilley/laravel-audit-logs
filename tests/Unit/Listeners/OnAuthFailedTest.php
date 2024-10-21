@@ -24,6 +24,7 @@ test('logs are written for Illuminate\Auth\Events\Failed - user exists', functio
 
     expect($user->auditLogs()->count())->toBe(1);
     expect($user->auditLogs()->first()->only([
+        'user_type',
         'user_id',
         'model_type',
         'model_id',
@@ -31,6 +32,7 @@ test('logs are written for Illuminate\Auth\Events\Failed - user exists', functio
         'action',
         'data',
     ]))->toBe([
+        'user_type' => null,
         'user_id' => null,
         'model_type' => User::class,
         'model_id' => $user->id,
@@ -64,6 +66,7 @@ test('logs are written for Illuminate\Auth\Events\Failed - user does not exist',
 
     expect(AuditLog::count())->toBe(1);
     expect(AuditLog::first()->only([
+        'user_type',
         'user_id',
         'model_type',
         'model_id',
@@ -71,6 +74,7 @@ test('logs are written for Illuminate\Auth\Events\Failed - user does not exist',
         'action',
         'data',
     ]))->toBe([
+        'user_type' => null,
         'user_id' => null,
         'model_type' => null,
         'model_id' => null,

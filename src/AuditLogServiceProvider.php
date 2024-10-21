@@ -57,7 +57,7 @@ class AuditLogServiceProvider extends PackageServiceProvider
 
     public function packageRegistered(): void
     {
-        $this->app->singleton(AuditLogRecorder::class, AuditLogRecorder::class);
+        $this->app->singleton(AuditLogger::class, AuditLogger::class);
 
         foreach (static::EVENTS as $event => $listener) {
             Event::listen($event, $listener);

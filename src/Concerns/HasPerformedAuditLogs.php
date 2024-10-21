@@ -5,7 +5,7 @@ namespace BradieTilley\AuditLogs\Concerns;
 use BradieTilley\AuditLogs\AuditLogConfig;
 use BradieTilley\AuditLogs\Models\AuditLog;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 /**
  * @mixin Model
@@ -14,12 +14,14 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 trait HasPerformedAuditLogs
 {
     /**
-     * @return HasMany<AuditLog, static>
+     * @return MorphMany<AuditLog, static>
      */
-    public function performedAuditLogs(): HasMany
+    public function performedAuditLogs(): MorphMany
     {
-        return $this->hasMany(
+        return $this->morphMany(
             AuditLogConfig::getAuditLogModel(),
+            'user',
+            'user_type',
             'user_id',
         )->orderByDesc('id');
     }

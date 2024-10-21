@@ -2,13 +2,11 @@
 
 namespace BradieTilley\AuditLogs\Models;
 
-use BradieTilley\AuditLogs\AuditLogConfig;
 use BradieTilley\AuditLogs\Casts\IpAddressCast;
 use BradieTilley\AuditLogs\Observers\AuditLogObserver;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Foundation\Auth\User;
 
@@ -72,11 +70,11 @@ class AuditLog extends Model
     }
 
     /**
-     * @return BelongsTo<User, $this>
+     * @return MorphTo<Model, $this>
      */
-    public function user(): BelongsTo
+    public function user(): MorphTo
     {
-        return $this->belongsTo(AuditLogConfig::getUserModel(), 'user_id');
+        return $this->morphTo('user', 'user_type', 'user_id');
     }
 
     /**

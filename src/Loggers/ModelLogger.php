@@ -4,7 +4,7 @@ namespace BradieTilley\AuditLogs\Loggers;
 
 use BackedEnum;
 use BradieTilley\AuditLogs\AuditLogConfig;
-use BradieTilley\AuditLogs\AuditLogRecorder;
+use BradieTilley\AuditLogs\AuditLogger;
 use BradieTilley\AuditLogs\Models\AuditLog;
 use Carbon\Carbon;
 use DateTimeInterface;
@@ -274,7 +274,7 @@ class ModelLogger
      */
     public function recordSingleLog(string $action): static
     {
-        AuditLogRecorder::make()->record($this->model, $action, AuditLog::TYPE_ACTIVITY, []);
+        AuditLogger::make()->record($this->model, $action, AuditLog::TYPE_ACTIVITY, []);
 
         return $this;
     }

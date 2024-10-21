@@ -4,12 +4,12 @@ namespace BradieTilley\AuditLogs\Contracts;
 
 use BradieTilley\AuditLogs\Models\AuditLog;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 interface WithPerformedAuditLogs
 {
     /**
-     * @return HasMany<AuditLog, Model>
+     * @return MorphMany<AuditLog, Model>
      */
-    public function performedAuditLogs(): HasMany;
+    public function performedAuditLogs(): MorphMany;
 }

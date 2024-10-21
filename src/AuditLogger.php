@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Psr\Log\LoggerInterface;
 
-class AuditLogRecorder
+class AuditLogger
 {
     public LoggerInterface $logger;
 
@@ -27,10 +27,10 @@ class AuditLogRecorder
         $this->logger = $log->channel(AuditLogConfig::getLogChannel());
     }
 
-    public static function make(): AuditLogRecorder
+    public static function make(): AuditLogger
     {
-        /** @var AuditLogRecorder $instance */
-        $instance = app(AuditLogRecorder::class);
+        /** @var AuditLogger $instance */
+        $instance = app(AuditLogger::class);
 
         return $instance;
     }
@@ -46,6 +46,7 @@ class AuditLogRecorder
         $log->fill([
             'model_type' => $model?->getMorphClass(),
             'model_id' => $model?->getKey(),
+            'user_type' => $this->getUserMorphClass(),
             'user_id' => $this->getUserId(),
             'ip' => $this->getRequestIp(),
             'action' => $action,
@@ -104,6 +105,12 @@ class AuditLogRecorder
         $this->cache['user'] = $user;
 
         return $this;
+    }
+
+    protected function getUserMorphClass(): ?string
+    {
+        /** @phpstan-ignore-next-line */
+        return $this->cache[__FUNCTION__] ??= $this->user()?->getMorphClass();
     }
 
     protected function getUserId(): ?int

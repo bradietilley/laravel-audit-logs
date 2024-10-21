@@ -12,8 +12,8 @@ return new class () extends Migration {
             $table->id();
             $table->ulid('ulid')->unique();
 
-            $table->foreignIdFor(AuditLogConfig::getUserModel(), 'user_id')->nullable();
-            $table->nullableMorphs('model', 'model');
+            $table->nullableMorphs('user');
+            $table->nullableMorphs('model');
 
             $table->enum('type', [
                 AuditLogConfig::getAuditLogModel()::TYPE_AUDIT,
