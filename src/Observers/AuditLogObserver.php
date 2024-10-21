@@ -10,7 +10,7 @@ class AuditLogObserver
     public function creating(AuditLog $auditLog): void
     {
         $auditLog->fill([
-            'ulid' => $auditLog->ulid ?? Str::ulid()->toString(),
+            'ulid' => $auditLog->ulid ?? (string) Str::ulid(),
         ]);
     }
 }

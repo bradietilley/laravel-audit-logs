@@ -11,8 +11,10 @@ class OnAuthPasswordResetLinkSent extends AuditListener
 {
     public const ACTION = 'Password reset link sent';
 
+    /** @phpstan-ignore-next-line */
     public function handle(PasswordResetLinkSent $event): void
     {
+        /** @phpstan-ignore-next-line */
         $user = $event->user;
 
         if (! $user instanceof Model) {

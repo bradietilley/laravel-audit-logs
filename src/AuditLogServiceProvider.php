@@ -34,6 +34,9 @@ class AuditLogServiceProvider extends PackageServiceProvider
         Event::listen(Login::class, OnAuthLogin::class);
         Event::listen(Failed::class, OnAuthFailed::class);
         Event::listen(PasswordReset::class, OnAuthPasswordReset::class);
-        Event::listen(PasswordResetLinkSent::class, OnAuthPasswordResetLinkSent::class);
+
+        if (class_exists(PasswordResetLinkSent::class)) {
+            Event::listen(PasswordResetLinkSent::class, OnAuthPasswordResetLinkSent::class);
+        }
     }
 }
