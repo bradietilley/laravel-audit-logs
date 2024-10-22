@@ -26,4 +26,19 @@ return [
      * @var string
      */
     'user_identifier' => 'email',
+
+    /**
+     * Configuration for when recording changes to a resource
+     */
+    'changes' => [
+        /**
+         * The date format to use for date fields
+         */
+        'date_format' => 'j F Y',
+
+        /**
+         * The date format to use for datetime fields
+         */
+        'date_time_format' => 'j F Y, H:i:s',
+    ],
 ];

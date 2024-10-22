@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Hash;
-use Workbench\App\Models\Staff;
 use Workbench\App\Models\User;
 
 test('generic activity logger will record updates', function () {
@@ -26,12 +25,18 @@ test('generic activity logger will record updates', function () {
         'action',
         'ip',
         'type',
+        'data',
     ]))->toBe([
         'model_type' => User::class,
         'model_id' => $user->id,
-        'action' => 'Name set to `Foo Bar`',
+        'action' => 'User updated',
         'ip' => '127.0.0.1',
         'type' => 'activity',
+        'data' => [
+            'changes' => [
+                'name' => 'Name set to `Foo Bar`',
+            ],
+        ],
     ]);
 });
 
@@ -57,12 +62,18 @@ test('generic activity logger will record updates but will not include certain f
         'action',
         'ip',
         'type',
+        'data',
     ]))->toBe([
         'model_type' => User::class,
         'model_id' => $user->id,
-        'action' => 'Password updated',
+        'action' => 'User updated',
         'ip' => '127.0.0.1',
         'type' => 'activity',
+        'data' => [
+            'changes' => [
+                'password' => 'Password updated',
+            ],
+        ],
     ]);
 });
 
@@ -81,6 +92,7 @@ test('generic activity logger will record updates but will not include long stri
         'name' => str_repeat('a', 255),
     ]);
 
+    $expect = str_repeat('a', 50);
     expect($user->auditLogs()->count())->toBe(1);
     expect($user->auditLogs->first()->only([
         'model_type',
@@ -88,12 +100,18 @@ test('generic activity logger will record updates but will not include long stri
         'action',
         'ip',
         'type',
+        'data',
     ]))->toBe([
         'model_type' => User::class,
         'model_id' => $user->id,
-        'action' => 'Name updated',
+        'action' => 'User updated',
         'ip' => '127.0.0.1',
         'type' => 'activity',
+        'data' => [
+            'changes' => [
+                'name' => "Name set to `{$expect}` (255 characters)",
+            ],
+        ],
     ]);
 });
 
@@ -109,39 +127,8 @@ test('generic activity logger will not record superfluous fields', function () {
     expect($user->auditLogs()->count())->toBe(0);
 
     $user->update([
-        'created_at' => now()->subDay(),
+        'updated_at' => now()->subDay(),
     ]);
 
     expect($user->auditLogs()->count())->toBe(0);
-});
-
-test('a model can specify a custom logger', function () {
-    $user = Staff::withoutEvents(function () {
-        return Staff::create([
-            'name' => 'John Doe',
-            'email' => 'dojathej@example.org',
-            'password' => Hash::make('b8b8e49c4t3gr4'),
-        ]);
-    });
-
-    expect($user->auditLogs()->count())->toBe(0);
-
-    $user->update([
-        'name' => 'New Name',
-    ]);
-
-    expect($user->auditLogs()->count())->toBe(1);
-    expect($user->auditLogs->first()->only([
-        'model_type',
-        'model_id',
-        'action',
-        'ip',
-        'type',
-    ]))->toBe([
-        'model_type' => Staff::class,
-        'model_id' => $user->id,
-        'action' => 'StaffLogger custom log',
-        'ip' => '127.0.0.1',
-        'type' => 'activity',
-    ]);
 });

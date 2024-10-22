@@ -6,10 +6,10 @@ use BradieTilley\AuditLogs\Models\AuditLog;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\User;
 use Illuminate\Http\Request;
-use Illuminate\Log\LogManager;
 use Illuminate\Routing\Route as RoutingRoute;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
 use Psr\Log\LoggerInterface;
 
@@ -20,11 +20,9 @@ class AuditLogger
     /** @var array<string, mixed> */
     protected array $cache = [];
 
-    public function __construct(
-        public readonly Request $request,
-        LogManager $log,
-    ) {
-        $this->logger = $log->channel(AuditLogConfig::getLogChannel());
+    public function __construct(public readonly Request $request)
+    {
+        $this->logger = Log::channel(AuditLogConfig::getLogChannel());
     }
 
     public static function make(): AuditLogger
@@ -97,12 +95,17 @@ class AuditLogger
     public function user(): ?User
     {
         /** @phpstan-ignore-next-line */
-        return $this->cache[__FUNCTION__] ??= Auth::user();
+        return $this->cache['user'] ??= Auth::user();
     }
 
     public function setUser(?User $user): static
     {
         $this->cache['user'] = $user;
+
+        unset($this->cache['getUserMorphClass']);
+        unset($this->cache['getUserId']);
+        unset($this->cache['getUserEmail']);
+        unset($this->cache['getUserName']);
 
         return $this;
     }

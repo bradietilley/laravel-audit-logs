@@ -4,7 +4,6 @@ namespace BradieTilley\AuditLogs\Concerns;
 
 use BradieTilley\AuditLogs\AuditLogConfig;
 use BradieTilley\AuditLogs\Contracts\WithAuditLogs;
-use BradieTilley\AuditLogs\Loggers\ModelLogger;
 use BradieTilley\AuditLogs\Models\AuditLog;
 use BradieTilley\AuditLogs\Observers\HasAuditLogsObserver;
 use Illuminate\Database\Eloquent\Model;
@@ -49,10 +48,5 @@ trait HasAuditLogs
     public static function bootHasAuditLogs(): void
     {
         self::observe(HasAuditLogsObserver::class);
-    }
-
-    public function getAuditLogger(): ModelLogger
-    {
-        return new ModelLogger($this);
     }
 }

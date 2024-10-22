@@ -40,4 +40,22 @@ class AuditLogConfig
         /** @phpstan-ignore-next-line */
         return static::get('user_identifier');
     }
+
+    /**
+     * The date format to use for a date field in a changelog
+     */
+    public static function getDateFormat(): string
+    {
+        /** @phpstan-ignore-next-line */
+        return static::get('changes.date_format', 'j F Y');
+    }
+
+    /**
+     * The date format to use for a datetime field in a changelog
+     */
+    public static function getDateTimeFormat(): string
+    {
+        /** @phpstan-ignore-next-line */
+        return static::get('changes.date_time_format', 'j F Y, H:i:s');
+    }
 }
