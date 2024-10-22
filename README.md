@@ -7,7 +7,7 @@ Whether you're tracking security events, other notable events, resource changes,
 - **Regulatory auditing purposes**
     - If you hook up the log stream to point to CloudWatch or similar, the logs can be considered immutable and trustworthy, helping serve the purpose of regulatory auditing.
 - **Viewing a resource's history**
-    - This package provides a morph ownership to a resource that was affected, such as a resource undergoing updates. This allows you to trace a when a resource was modified in a particular way and see the user or resource that performed that action.
+    - This package provides a morph ownership to a resource that was affected, such as a resource undergoing updates. This allows you to trace when a resource was modified in a particular way and see the user or resource that performed that action.
 - **Viewing a user's actions**
     - This package provides a morph ownership to the user or resource that performed the action, by default this is the authorised user. This allows you to therefore trace a user's steps as they navigate and interact with your application.
 - **Analytical reporting**
