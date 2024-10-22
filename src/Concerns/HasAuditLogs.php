@@ -3,18 +3,18 @@
 namespace BradieTilley\AuditLogs\Concerns;
 
 use BradieTilley\AuditLogs\AuditLogConfig;
-use BradieTilley\AuditLogs\Contracts\WithAuditLog;
+use BradieTilley\AuditLogs\Contracts\WithAuditLogs;
 use BradieTilley\AuditLogs\Loggers\ModelLogger;
 use BradieTilley\AuditLogs\Models\AuditLog;
-use BradieTilley\AuditLogs\Observers\HasAuditLogObserver;
+use BradieTilley\AuditLogs\Observers\HasAuditLogsObserver;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 /**
  * @mixin Model
- * @mixin WithAuditLog
+ * @mixin WithAuditLogs
  */
-trait HasAuditLog
+trait HasAuditLogs
 {
     /**
      * Get audit logs relating to this resource.
@@ -46,9 +46,9 @@ trait HasAuditLog
         )->orderByDesc('id');
     }
 
-    public static function bootHasAuditLog(): void
+    public static function bootHasAuditLogs(): void
     {
-        self::observe(HasAuditLogObserver::class);
+        self::observe(HasAuditLogsObserver::class);
     }
 
     public function getAuditLogger(): ModelLogger

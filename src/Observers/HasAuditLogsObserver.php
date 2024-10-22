@@ -2,42 +2,42 @@
 
 namespace BradieTilley\AuditLogs\Observers;
 
-use BradieTilley\AuditLogs\Contracts\WithAuditLog;
+use BradieTilley\AuditLogs\Contracts\WithAuditLogs;
 use Illuminate\Database\Eloquent\Model;
 
-class HasAuditLogObserver
+class HasAuditLogsObserver
 {
-    public function created(Model&WithAuditLog $model): void
+    public function created(Model&WithAuditLogs $model): void
     {
         $model->getAuditLogger()->run('created');
     }
 
-    public function updated(Model&WithAuditLog $model): void
+    public function updated(Model&WithAuditLogs $model): void
     {
         $model->getAuditLogger()->run('updated');
     }
 
-    public function saved(Model&WithAuditLog $model): void
+    public function saved(Model&WithAuditLogs $model): void
     {
         $model->getAuditLogger()->run('saved');
     }
 
-    public function deleted(Model&WithAuditLog $model): void
+    public function deleted(Model&WithAuditLogs $model): void
     {
         $model->getAuditLogger()->run('deleted');
     }
 
-    public function trashed(Model&WithAuditLog $model): void
+    public function trashed(Model&WithAuditLogs $model): void
     {
         $model->getAuditLogger()->run('trashed');
     }
 
-    public function forceDeleted(Model&WithAuditLog $model): void
+    public function forceDeleted(Model&WithAuditLogs $model): void
     {
         $model->getAuditLogger()->run('forceDeleted');
     }
 
-    public function restored(Model&WithAuditLog $model): void
+    public function restored(Model&WithAuditLogs $model): void
     {
         $model->getAuditLogger()->run('restored');
     }

@@ -19,6 +19,7 @@ class OnAuthAttempting extends AuditListener
     public function handle(Attempting $event): void
     {
         $provider = null;
+        $user = null;
 
         try {
             $guard = Auth::guard($event->guard);
@@ -26,18 +27,14 @@ class OnAuthAttempting extends AuditListener
             if ($guard instanceof RequestGuard || $guard instanceof SessionGuard || $guard instanceof TokenGuard) {
                 $provider = $guard->getProvider();
             }
+
+            $user = $provider?->retrieveByCredentials($event->credentials);
+
+            if (! $user instanceof Model) {
+                $user = null;
+            }
         } catch (Throwable) {
             //
-        }
-
-        if ($provider === null) {
-            return;
-        }
-
-        $user = $provider->retrieveByCredentials($event->credentials);
-
-        if (! is_null($user) && ! $user instanceof Model) {
-            return;
         }
 
         $field = AuditLogConfig::getUserIdentifier();

@@ -7,7 +7,7 @@ use BradieTilley\AuditLogs\Models\AuditLog;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
-interface WithAuditLog
+interface WithAuditLogs
 {
     /**
      * Get audit logs relating to this resource.

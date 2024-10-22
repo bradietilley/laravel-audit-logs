@@ -17,12 +17,12 @@ Add the following interface and trait to the model you wish to attach audit logs
 
 namespace App\Models;
 
-use BradieTilley\AuditLogs\Contracts\WithAuditLog;
-use BradieTilley\AuditLogs\Concerns\HasAuditLog;
+use BradieTilley\AuditLogs\Contracts\WithAuditLogs;
+use BradieTilley\AuditLogs\Concerns\HasAuditLogs;
 
-class User extends Model implements WithAuditLog
+class User extends Model implements WithAuditLogs
 {
-    use HasAuditLog;
+    use HasAuditLogs;
 }
 ```
 
@@ -54,12 +54,12 @@ Now configure your model to utilise this `ModelLogger`:
 namespace App\Models;
 
 use App\AuditLoggers\UserAuditLogger;
-use BradieTilley\AuditLogs\Contracts\WithAuditLog;
-use BradieTilley\AuditLogs\Concerns\HasAuditLog;
+use BradieTilley\AuditLogs\Contracts\WithAuditLogs;
+use BradieTilley\AuditLogs\Concerns\HasAuditLogs;
 
-class User extends Model implements WithAuditLog
+class User extends Model implements WithAuditLogs
 {
-    use HasAuditLog;
+    use HasAuditLogs;
 
     public function getAuditLogger(): UserAuditLogger
     {

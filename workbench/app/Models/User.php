@@ -2,13 +2,13 @@
 
 namespace Workbench\App\Models;
 
-use BradieTilley\AuditLogs\Concerns\HasAuditLog;
-use BradieTilley\AuditLogs\Contracts\WithAuditLog;
+use BradieTilley\AuditLogs\Concerns\HasAuditLogs;
+use BradieTilley\AuditLogs\Contracts\WithAuditLogs;
 use Illuminate\Foundation\Auth\User as AuthUser;
 
-class User extends AuthUser implements WithAuditLog
+class User extends AuthUser implements WithAuditLogs
 {
-    use HasAuditLog;
+    use HasAuditLogs;
 
     public $table = 'users';
 

@@ -2,14 +2,14 @@
 
 namespace Workbench\App\Models;
 
-use BradieTilley\AuditLogs\Concerns\HasAuditLog;
-use BradieTilley\AuditLogs\Contracts\WithAuditLog;
+use BradieTilley\AuditLogs\Concerns\HasAuditLogs;
+use BradieTilley\AuditLogs\Contracts\WithAuditLogs;
 use BradieTilley\AuditLogs\Loggers\ModelLogger;
 use Workbench\App\Models\Loggers\StaffLogger;
 
-class Staff extends User implements WithAuditLog
+class Staff extends User implements WithAuditLogs
 {
-    use HasAuditLog;
+    use HasAuditLogs;
 
     protected $guarded = [];
 
