@@ -62,10 +62,12 @@ class ModelChangeCompiler
                 }
 
                 if (is_string($value)) {
+                    $value = json_encode($value);
+                    $value = mb_substr($value, 1, -1);
                     $length = mb_strlen($value, static::ENCODING);
 
                     if ($this->isTooLong($value)) {
-                        $value = Str::limit($value, static::TRUNCATE_STRING_LENGTH, '', true);
+                        $value = Str::limit($value, static::TRUNCATE_STRING_LENGTH, '...', true);
 
                         return "{$label} set to `{$value}` ({$length} characters)";
                     }
