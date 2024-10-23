@@ -10,6 +10,7 @@ use DateTimeInterface;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
+use ReflectionClass;
 
 /**
  * Curate a list of changes made to a model during the `updated` event.
@@ -57,9 +58,15 @@ class ChangeLogger
                     return "{$label} updated";
                 }
 
-                if (is_string($value)) {
+                if (is_string($value) || is_int($value)) {
                     if ($this->isDateField($field) || $this->isDateTimeField($field)) {
                         $value = CarbonImmutable::parse($value);
+                    } elseif ($this->isEnumField($field)) {
+                        $enumClass = $this->casts[$field];
+
+                        $value = $enumClass::tryFrom($value) ?? $value;
+                    } elseif ($this->isIterableField($field)) {
+                        return "{$label} updated";
                     }
                 }
 
@@ -200,6 +207,38 @@ class ChangeLogger
          * Misconfiguration defualt
          */
         return 100;
+    }
+
+    public function isEnumField(string $field): bool
+    {
+        $cast = $this->casts[$field] ?? null;
+
+        if (! is_string($cast)) {
+            return false;
+        }
+
+        if (! class_exists($cast)) {
+            return false;
+        }
+
+        $class = new ReflectionClass($cast);
+
+        return $class->isEnum();
+    }
+
+    public function isIterableField(string $field): bool
+    {
+        $cast = $this->casts[$field] ?? null;
+
+        if (! is_string($cast)) {
+            return false;
+        }
+
+        return Str::is([
+            'array',
+            'collection',
+            'json',
+        ], $cast);
     }
 
     /**
