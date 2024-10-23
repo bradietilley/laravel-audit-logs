@@ -92,7 +92,7 @@ test('generic activity logger will record updates but will not include long stri
         'name' => str_repeat('a', 255),
     ]);
 
-    $expect = str_repeat('a', 50);
+    $expect = str_repeat('a', 100);
     expect($user->auditLogs()->count())->toBe(1);
     expect($user->auditLogs->first()->only([
         'model_type',
@@ -109,7 +109,7 @@ test('generic activity logger will record updates but will not include long stri
         'type' => 'activity',
         'data' => [
             'changes' => [
-                'name' => "Name set to `{$expect}` (255 characters)",
+                'name' => "Name set to `{$expect}...` (255 characters)",
             ],
         ],
     ]);

@@ -1,15 +1,25 @@
 <?php
 
 use BradieTilley\AuditLogs\Models\AuditLog;
+use BradieTilley\AuditLogs\Observers\HasAuditLogsObserver;
 
 return [
     'models' => [
         /**
          * The audit log model to use
          *
-         * @var class-string<AuditLog>
+         * @var class-string<\BradieTilley\AuditLogs\Models\AuditLog>
          */
         'audit_log' => AuditLog::class,
+    ],
+
+    'classes' => [
+        /**
+         * The audit log observer class to use
+         *
+         * @var class-string<\BradieTilley\AuditLogs\Observers\HasAuditLogsObserver>
+         */
+        'observer' => HasAuditLogsObserver::class,
     ],
 
     /**
@@ -31,6 +41,37 @@ return [
      * Configuration for when recording changes to a resource
      */
     'changes' => [
+        /**
+         * Truncate all strings to this length
+         */
+        'truncate_string_length' => 100,
+
+        'ignored_fields' => [
+            '*' => [
+                'id',
+                'updated_at',
+                'deleted_at',
+            ],
+
+            'App\Models\User' => [
+                'remember_token',
+            ],
+        ],
+
+        'sensitive_fields' => [
+            '*' => [
+                'password',
+                '*_token',
+                'token',
+                'secret',
+                '*_secret',
+            ],
+
+            'App\Models\User' => [
+                'drives_licence',
+            ],
+        ],
+
         /**
          * The date format to use for date fields
          */

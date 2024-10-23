@@ -39,48 +39,61 @@ class User extends Model implements WithAuditLogs
 }
 ```
 
-By default this will use a rudimentary `BradieTilley\AuditLogs\Loggers\ModelLogger` logger instance to track eloquent events for this model, including creation, deletion, updates and restorations.
+The `HasAuditLogs` trait will register an observer (`BradieTilley\AuditLogs\Observers\HasAuditLogsObserver`, configurable via `audit-logs.classes.observer`) that listens to the following eloquent events: `created`, `updated`, `deleted`, `forceDeleted`, `restored`.
 
-For updates, this will keep record of what fields were updated.
+These events will record a pretty ordinary audit log for the respective event.
 
-Optionally, create a customer `ModelLogger` class for your model to customise the logs that get written, such as if you wish to customise how specific fields are written.
+For the `updated` event, the attributes that are changed will be logged with some exceptions:
+
+**Ignoring Irrelevant Fields**
+
+The `audit_logs.changes.ignored_fields` configuration allows you to configure which fields should be considered irrelevant. If there are no relevant fields, no 'Updated' log will be written.
+
+Default Global: `id`, `updated_at`, `deleted_at` \
+Default User model specific: `remember_token`
+
+**Redacting Sensitive Fields**
+
+The `audit_logs.changes.sensitive_fields` configuration allows you to configure which fields should be redacted when logged. This allows you to still record when changes are made but not see the sensitive data.
+
+Default Global: `password`, `token`/`*_token`, `secret`/`*_secret` \
+Default User model specific: `drivers_licence` (a demonstrative example)
+
+**Truncating Long Strings**
+
+The `audit_logs.changes.truncate_string_length` configuration allows you to configure how long strings can be before they are truncated (`Str::limit()` with '...')
+
+**Customising the Change Logger**
+
+Want to completely customise what gets logged? The `BradieTilley\AuditLogs\Loggers\ChangeLogger` class can be swapped out for any class that extends `ChangeLogger`:
+
 
 ```php
 <?php
 
-namespace App\AuditLoggers;
+namespace App\Loggers;
 
-use BradieTilley\AuditLogs\Loggers\ModelLogger;
+use BradieTilley\AuditLogs\Loggers\ChangeLogger;
 
-class UserAuditLogger extends ModelLogger
+class MyChangeLogger extends ChangeLogger
 {
-    protected function updated(): void
+    protected function getChanges(): array
     {
-        if ($this->wasChanged('email')) {
-            $this->record("Email → {$this->email}");
+        $changes = parent::getChanges();
+
+        if ($this->model instanceof Product) {
+            unset($changes['stock']);
         }
+
+        return $changes;
     }
 }
 ```
 
-Now configure your model to utilise this `ModelLogger`:
+Now configure your app to utilise this `ModelLogger` in `AppServiceProvider` or a similar spot:
 
 ```php
-namespace App\Models;
-
-use App\AuditLoggers\UserAuditLogger;
-use BradieTilley\AuditLogs\Contracts\WithAuditLogs;
-use BradieTilley\AuditLogs\Concerns\HasAuditLogs;
-
-class User extends Model implements WithAuditLogs
-{
-    use HasAuditLogs;
-
-    public function getAuditLogger(): UserAuditLogger
-    {
-        return UserAuditLogger::make($this);
-    }
-}
+$this->app->bind(\BradieTilley\AuditLogs\Logger\ChangeLogger::class, \App\Loggers\MyChangeLogger::class);
 ```
 
 ### Audit Logs → Security and authentication events

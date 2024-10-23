@@ -4,17 +4,19 @@ namespace BradieTilley\AuditLogs\Loggers;
 
 use BackedEnum;
 use BradieTilley\AuditLogs\AuditLogConfig;
+use BradieTilley\AuditLogs\AuditLogUtil;
 use Carbon\CarbonImmutable;
 use DateTimeInterface;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
-class ModelChangeCompiler
+/**
+ * Curate a list of changes made to a model during the `updated` event.
+ */
+class ChangeLogger
 {
     protected const ENCODING = 'UTF-8';
-
-    protected const TRUNCATE_STRING_LENGTH = 50;
 
     /** @var array<string, mixed> */
     public array $casts = [];
@@ -43,11 +45,11 @@ class ModelChangeCompiler
     public function toArray(): array
     {
         /** @phpstan-ignore-next-line */
-        return Collection::make($this->model->getChanges())
+        return Collection::make($this->getChanges())
             ->map(function (mixed $value, string $field) {
-                $label = ucwords(str_replace('_', ' ', $field));
+                $label = AuditLogUtil::getFieldName($field);
 
-                if (! $this->isRelevant($field)) {
+                if ($this->isIgnored($field)) {
                     return null;
                 }
 
@@ -65,9 +67,10 @@ class ModelChangeCompiler
                     $value = json_encode($value);
                     $value = mb_substr($value, 1, -1);
                     $length = mb_strlen($value, static::ENCODING);
+                    $truncateLength = AuditLogConfig::getTruncateStringLength();
 
-                    if ($this->isTooLong($value)) {
-                        $value = Str::limit($value, static::TRUNCATE_STRING_LENGTH, '...', true);
+                    if ($length > $truncateLength) {
+                        $value = Str::limit($value, $truncateLength, '...', true);
 
                         return "{$label} set to `{$value}` ({$length} characters)";
                     }
@@ -115,31 +118,31 @@ class ModelChangeCompiler
     }
 
     /**
-     * Determine if the given field is relevant / should be logged
+     * Determine if the given field should be ignored
      */
-    protected function isRelevant(string $field): bool
+    protected function isIgnored(string $field): bool
     {
-        return ! in_array($field, [
-            'id',
-            'updated_at',
-            'deleted_at',
-        ]);
+        $fields = AuditLogConfig::getIgnoredFields();
+        $fields = [
+            ...$fields['*'] ?? [],
+            ...$fields[$this->model::class] ?? [],
+        ];
+
+        return in_array($field, $fields);
     }
 
+    /**
+     * Determine if the given field is sensitive and should be redacted
+     */
     protected function isSensitive(string $field): bool
     {
-        return Str::is([
-            'password',
-            '*_token',
-            'token',
-            'secret',
-            '*_secret',
-        ], $field);
-    }
+        $fields = AuditLogConfig::getSensitiveFields();
+        $fields = [
+            ...$fields['*'] ?? [],
+            ...$fields[$this->model::class] ?? [],
+        ];
 
-    public function isTooLong(string $value): bool
-    {
-        return mb_strlen($value, static::ENCODING) > static::TRUNCATE_STRING_LENGTH;
+        return Str::is($fields, $field);
     }
 
     public function isDateField(string $field): bool
@@ -156,5 +159,10 @@ class ModelChangeCompiler
             'datetime',
             'immutable_datetime',
         ]);
+    }
+
+    protected function getChanges(): array
+    {
+        return $this->model->getChanges();
     }
 }

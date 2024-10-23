@@ -5,7 +5,7 @@ namespace BradieTilley\AuditLogs\Observers;
 use BradieTilley\AuditLogs\AuditLogger;
 use BradieTilley\AuditLogs\AuditLogUtil;
 use BradieTilley\AuditLogs\Contracts\WithAuditLogs;
-use BradieTilley\AuditLogs\Loggers\ModelChangeCompiler;
+use BradieTilley\AuditLogs\Loggers\ChangeLogger;
 use Illuminate\Database\Eloquent\Model;
 
 class HasAuditLogsObserver
@@ -21,7 +21,7 @@ class HasAuditLogsObserver
 
     public function updated(Model&WithAuditLogs $model): void
     {
-        $changes = ModelChangeCompiler::make($model)->toArray();
+        $changes = ChangeLogger::make($model)->toArray();
 
         if (empty($changes)) {
             return;
@@ -49,6 +49,6 @@ class HasAuditLogsObserver
 
     protected function name(Model $model): string
     {
-        return AuditLogUtil::getName($model::class);
+        return AuditLogUtil::getModelName($model::class);
     }
 }

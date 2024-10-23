@@ -25,6 +25,9 @@ class AuditLogger
         $this->logger = Log::channel(AuditLogConfig::getLogChannel());
     }
 
+    /**
+     * Static constructor
+     */
     public static function make(): AuditLogger
     {
         /** @var AuditLogger $instance */
@@ -34,6 +37,8 @@ class AuditLogger
     }
 
     /**
+     * Record an audit log
+     *
      * @param array<mixed> $data
      */
     public function record(?Model $model, string $action, string $type = AuditLog::TYPE_ACTIVITY, array $data = []): AuditLog
@@ -60,6 +65,8 @@ class AuditLogger
     }
 
     /**
+     * Write a verbose log to the log channel/stream
+     *
      * @param array<mixed> $data
      */
     protected function writeLog(AuditLog $log, array $data): void

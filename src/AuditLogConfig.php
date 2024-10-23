@@ -3,12 +3,20 @@
 namespace BradieTilley\AuditLogs;
 
 use BradieTilley\AuditLogs\Models\AuditLog;
+use BradieTilley\AuditLogs\Observers\HasAuditLogsObserver;
 
 class AuditLogConfig
 {
+    protected static $cache = [];
+
     protected static function get(string $key, mixed $default = null): mixed
     {
-        return config("audit-logs.{$key}", $default);
+        return static::$cache[$key] ??= config("audit-logs.{$key}", $default);
+    }
+
+    public static function clearCache(): void
+    {
+        static::$cache = [];
     }
 
     /**
@@ -20,6 +28,16 @@ class AuditLogConfig
     {
         /** @phpstan-ignore-next-line */
         return static::get('models.audit_log', AuditLog::class);
+    }
+
+    /**
+     * Get the audit log observer class to use
+     *
+     * @return class-string<HasAuditLogsObserver>
+     */
+    public static function getObserverClass(): string
+    {
+        return static::get('classes.observer', HasAuditLogsObserver::class);
     }
 
     /**
@@ -57,5 +75,29 @@ class AuditLogConfig
     {
         /** @phpstan-ignore-next-line */
         return static::get('changes.date_time_format', 'j F Y, H:i:s');
+    }
+
+    /**
+     * Get the length to truncate all strings to
+     */
+    public static function getTruncateStringLength(): int
+    {
+        return static::get('changes.truncate_string_length', 100);
+    }
+
+    /**
+     * @return array<string, array<string, string>>
+     */
+    public static function getIgnoredFields(): array
+    {
+        return static::get('changes.ignored_fields', []);
+    }
+
+    /**
+     * @return array<string,|array<string, string>>
+     */
+    public static function getSensitiveFields(): array
+    {
+        return static::get('changes.sensitive_fields', []);
     }
 }

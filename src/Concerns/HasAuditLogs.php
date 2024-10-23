@@ -5,7 +5,6 @@ namespace BradieTilley\AuditLogs\Concerns;
 use BradieTilley\AuditLogs\AuditLogConfig;
 use BradieTilley\AuditLogs\Contracts\WithAuditLogs;
 use BradieTilley\AuditLogs\Models\AuditLog;
-use BradieTilley\AuditLogs\Observers\HasAuditLogsObserver;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
@@ -47,6 +46,6 @@ trait HasAuditLogs
 
     public static function bootHasAuditLogs(): void
     {
-        self::observe(HasAuditLogsObserver::class);
+        self::observe(AuditLogConfig::getObserverClass());
     }
 }
