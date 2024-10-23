@@ -67,7 +67,7 @@ class ChangeLogger
                     $value = json_encode($value);
                     $value = mb_substr($value, 1, -1);
                     $length = mb_strlen($value, static::ENCODING);
-                    $truncateLength = AuditLogConfig::getTruncateStringLength();
+                    $truncateLength = $this->getTruncateLength($field);
 
                     if ($length > $truncateLength) {
                         $value = Str::limit($value, $truncateLength, '...', true);
@@ -159,6 +159,47 @@ class ChangeLogger
             'datetime',
             'immutable_datetime',
         ]);
+    }
+
+    /**
+     * Get the length to truncate this field to.
+     */
+    public function getTruncateLength(string $field): int
+    {
+        $config = AuditLogConfig::getTruncateStringLengths();
+
+        /**
+         * At the most specific, you might have defined a specific model and a specific field
+         */
+        if (isset($config[$this->model::class][$field])) {
+            return $config[$this->model::class][$field];
+        }
+
+        /**
+         * Next most specific, you might have defined a specific model but *any* field
+         */
+        if (isset($config[$this->model::class]['*'])) {
+            return $config[$this->model::class]['*'];
+        }
+
+        /**
+         * Next most specific, you might have defined *any* model and a specific field
+         */
+        if (isset($config['*'][$field])) {
+            return $config['*'][$field];
+        }
+
+        /**
+         * Least specific, you might have defined *any* model and *any* field
+         */
+        if (isset($config['*']['*'])) {
+            return $config['*']['*'];
+        }
+
+        /**
+         * Misconfiguration defualt
+         */
+        return 100;
     }
 
     protected function getChanges(): array

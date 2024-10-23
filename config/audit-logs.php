@@ -44,7 +44,20 @@ return [
         /**
          * Truncate all strings to this length
          */
-        'truncate_string_length' => 100,
+        'truncate_string_lengths' => [
+            /** Any model */
+            '*' => [
+                /** Any string field */
+                '*' => 100,
+
+                //     'content' => 150, // Example for the 'content' field on any model
+            ],
+
+            // 'App\Models\User' => [
+            //    '*' => 125, // Example for the User model but any field.
+            //     'bio' => 150, // Example for the User model's `bio` field.
+            // ],
+        ],
 
         'ignored_fields' => [
             '*' => [
@@ -53,9 +66,9 @@ return [
                 'deleted_at',
             ],
 
-            'App\Models\User' => [
-                'remember_token',
-            ],
+            // 'App\Models\User' => [ // Example for the User model's `remember_token` field.
+            //     'remember_token',
+            // ],
         ],
 
         'sensitive_fields' => [
@@ -67,9 +80,9 @@ return [
                 '*_secret',
             ],
 
-            'App\Models\User' => [
-                'drives_licence',
-            ],
+            // 'App\Models\User' => [ // Example for the User model's `drives_licence_number` field.
+            //     'drives_licence_number',
+            // ],
         ],
 
         /**

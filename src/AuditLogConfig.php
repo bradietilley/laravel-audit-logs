@@ -78,14 +78,18 @@ class AuditLogConfig
     }
 
     /**
-     * Get the length to truncate all strings to
+     * Get the length to truncate string fields to.
+     *
+     * @return array<string, array<string, int>>
      */
-    public static function getTruncateStringLength(): int
+    public static function getTruncateStringLengths(): array
     {
-        return static::get('changes.truncate_string_length', 100);
+        return static::get('changes.truncate_string_lengths', []);
     }
 
     /**
+     * Get the fields to ignore.
+     *
      * @return array<string, array<string, string>>
      */
     public static function getIgnoredFields(): array
@@ -94,6 +98,8 @@ class AuditLogConfig
     }
 
     /**
+     * Get the sensitive fields to redact.
+     *
      * @return array<string,|array<string, string>>
      */
     public static function getSensitiveFields(): array

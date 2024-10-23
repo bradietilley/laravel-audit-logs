@@ -61,12 +61,13 @@ Default User model specific: `drivers_licence` (a demonstrative example)
 
 **Truncating Long Strings**
 
-The `audit_logs.changes.truncate_string_length` configuration allows you to configure how long strings can be before they are truncated (`Str::limit()` with '...')
+The `audit_logs.changes.truncate_string_lengths` configuration allows you to configure how long strings can be before they are truncated (`Str::limit()` with '...'), and can be configured to specific models and fields, or generic fields across any model, or simply a global default.
+
+Default: 100 characters
 
 **Customising the Change Logger**
 
 Want to completely customise what gets logged? The `BradieTilley\AuditLogs\Loggers\ChangeLogger` class can be swapped out for any class that extends `ChangeLogger`:
-
 
 ```php
 <?php
