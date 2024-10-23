@@ -10,4 +10,4 @@ Route::get('request-logging-test/{user}', function (User $user, AuditLogger $rec
     return response()->json([
         //
     ]);
-});
+})->name('request-logging-test-route');

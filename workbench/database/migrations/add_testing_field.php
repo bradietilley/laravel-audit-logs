@@ -15,6 +15,7 @@ return new class () extends Migration {
             $table->foreignIdFor(User::class, 'foreign_key_id')->nullable();
             $table->integer('integer_field')->default(0);
             $table->decimal('decimal_field', 9, 2)->default(0);
+            $table->boolean('boolean_field')->nullable();
             $table->string('string_field')->nullable();
             $table->date('date_field')->nullable();
             $table->dateTime('datetime_field')->nullable();

@@ -78,6 +78,7 @@ class AuditLogger
             ],
             'request' => [
                 'ip' => $this->getRequestIp(),
+                'route' => $this->getRequestRoute(),
                 'path' => $this->getRequestPath(),
                 'middleware' => $this->getRequestMiddleware(),
                 'user_agent' => $this->getRequestUserAgent(),
@@ -93,10 +94,15 @@ class AuditLogger
         $this->logger->info($log->action, $data);
     }
 
+    public function setRunningInConsole(bool $runningInConsole): void
+    {
+        $this->cache['runningInConsole'] = $runningInConsole;
+    }
+
     protected function runningInConsole(): bool
     {
         /** @phpstan-ignore-next-line */
-        return $this->cache[__FUNCTION__] ??= App::runningInConsole();
+        return $this->cache['runningInConsole'] ??= App::runningInConsole() && ! App::runningUnitTests();
     }
 
     public function user(): ?User
@@ -144,7 +150,7 @@ class AuditLogger
         );
     }
 
-    protected function route(): RoutingRoute
+    protected function route(): ?RoutingRoute
     {
         /** @phpstan-ignore-next-line */
         return $this->cache[__FUNCTION__] ??= Route::current();

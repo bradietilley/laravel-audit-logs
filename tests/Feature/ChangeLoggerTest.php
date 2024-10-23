@@ -1,8 +1,11 @@
 <?php
 
+use BradieTilley\AuditLogs\AuditLogConfig;
+use BradieTilley\AuditLogs\Loggers\ChangeLogger;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
 use Workbench\App\Enums\UserStatusTestEnum;
+use Workbench\App\Models\Staff;
 use Workbench\App\Models\User;
 
 test('the change logger will record updated fields', function (array $updates, array $changes) {
@@ -13,7 +16,7 @@ test('the change logger will record updated fields', function (array $updates, a
             'password' => Hash::make('b8b8e49c4t3gr4'),
             'integer_field' => 0,
             'decimal_field' => 0,
-            'string_field' => '',
+            'string_field' => 'old',
             'date_field' => Carbon::now()->subDay(),
             'datetime_field' => Carbon::now()->subDay(),
             'enum_field' => UserStatusTestEnum::Pending,
@@ -67,12 +70,28 @@ test('the change logger will record updated fields', function (array $updates, a
             'integer_field' => 'Integer Field set to 1',
         ],
     ],
-    'will record float field changes' => [
+    'will record null field changes' => [
         'updates' => [
-            'decimal_field' => 15.14,
+            'string_field' => null,
         ],
         'changes' => [
-            'decimal_field' => 'Decimal Field set to 15.14',
+            'string_field' => 'String Field removed',
+        ],
+    ],
+    'will record boolean / true field changes' => [
+        'updates' => [
+            'boolean_field' => true,
+        ],
+        'changes' => [
+            'boolean_field' => 'Boolean Field set to true',
+        ],
+    ],
+    'will record boolean / false field changes' => [
+        'updates' => [
+            'boolean_field' => false,
+        ],
+        'changes' => [
+            'boolean_field' => 'Boolean Field set to false',
         ],
     ],
     'will record enum field changes' => [
@@ -114,7 +133,7 @@ test('the change logger will record updated fields', function (array $updates, a
             'foreign_key_id' => 1,
         ],
         'changes' => [
-            'foreign_key_id' => 'Foreign Key Id set to 1',
+            'foreign_key_id' => 'Foreign Key ID set to 1',
         ],
     ],
     'will redact sensitive field values' => [
@@ -140,3 +159,43 @@ test('the change logger will record updated fields', function (array $updates, a
         'changes' => [], // no audit log
     ],
 ]);
+
+test('truncate length can be derived from configuration', function () {
+    $config = [
+        '*' => [
+            '*' => 123,
+
+            'name' => 124,
+        ],
+
+        Staff::class => [
+            '*' => 125,
+
+            'name' => 126,
+        ],
+    ];
+
+    config([
+        'audit-logs.changes.truncate_string_lengths' => $config,
+    ]);
+    AuditLogConfig::clearCache();
+
+    $user = new User([
+        'name' => '',
+    ]);
+    $userChangeLogger = new ChangeLogger($user);
+
+    $staff = new Staff([
+        'name' => '',
+    ]);
+    $staffChangeLogger = new ChangeLogger($staff);
+
+    /** Catch-all model + catch-all field */
+    expect($userChangeLogger->getTruncateLength('content'))->toBe(123);
+    /** Catch-all model + specific field */
+    expect($userChangeLogger->getTruncateLength('name'))->toBe(124);
+    /** Specific model + catch-all field */
+    expect($staffChangeLogger->getTruncateLength('content'))->toBe(125);
+    /** Specific model + specific field */
+    expect($staffChangeLogger->getTruncateLength('name'))->toBe(126);
+});
