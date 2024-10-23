@@ -64,7 +64,7 @@ class ChangeLogger
                 }
 
                 if (is_string($value)) {
-                    $value = json_encode($value);
+                    $value = json_encode($value) ?: '';
                     $value = mb_substr($value, 1, -1);
                     $length = mb_strlen($value, static::ENCODING);
                     $truncateLength = $this->getTruncateLength($field);
@@ -202,6 +202,9 @@ class ChangeLogger
         return 100;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     protected function getChanges(): array
     {
         return $this->model->getChanges();

@@ -7,7 +7,8 @@ use BradieTilley\AuditLogs\Observers\HasAuditLogsObserver;
 
 class AuditLogConfig
 {
-    protected static $cache = [];
+    /** @var array<string, mixed> */
+    protected static array $cache = [];
 
     protected static function get(string $key, mixed $default = null): mixed
     {
@@ -37,6 +38,7 @@ class AuditLogConfig
      */
     public static function getObserverClass(): string
     {
+        /** @phpstan-ignore-next-line */
         return static::get('classes.observer', HasAuditLogsObserver::class);
     }
 
@@ -84,6 +86,7 @@ class AuditLogConfig
      */
     public static function getTruncateStringLengths(): array
     {
+        /** @phpstan-ignore-next-line */
         return static::get('changes.truncate_string_lengths', []);
     }
 
@@ -94,16 +97,18 @@ class AuditLogConfig
      */
     public static function getIgnoredFields(): array
     {
+        /** @phpstan-ignore-next-line */
         return static::get('changes.ignored_fields', []);
     }
 
     /**
      * Get the sensitive fields to redact.
      *
-     * @return array<string,|array<string, string>>
+     * @return array<string,array<string, string>>
      */
     public static function getSensitiveFields(): array
     {
+        /** @phpstan-ignore-next-line */
         return static::get('changes.sensitive_fields', []);
     }
 }
