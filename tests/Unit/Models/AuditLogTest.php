@@ -18,7 +18,7 @@ test('an audit log morphs to a resource and an actioner', function () {
     ]));
 
     $this->actingAs($admin);
-    AuditLogger::write($user, 'Test');
+    AuditLogger::write('Test', $user);
 
     $log = AuditLog::firstOrFail();
 
@@ -27,10 +27,10 @@ test('an audit log morphs to a resource and an actioner', function () {
 });
 
 test('audit logs can be scoped by ip address', function () {
-    $a1 = AuditLogger::write(null, '1');
-    $a2 = AuditLogger::write(null, '2');
-    $a3 = AuditLogger::write(null, '3');
-    $a4 = AuditLogger::write(null, '4');
+    $a1 = AuditLogger::write('1');
+    $a2 = AuditLogger::write('2');
+    $a3 = AuditLogger::write('3');
+    $a4 = AuditLogger::write('4');
 
     $a1->update([
         'ip' => '127.0.0.234',

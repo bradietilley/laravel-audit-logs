@@ -116,11 +116,78 @@ By default, various authentication events are already logged;
 
 Each of these events will log the event details, including the auth guard name and user, where applicable.
 
-### Logs → Customising logs
+### Ad-hoc Logs → Logging misc events wherever you want
+
+**Dependency Injection**
+
+The AuditLogger singleton can be injected where Dependency Injection is supported.
+
+```php
+use App\Models\Product;
+use BradieTilley\AuditLogs\AuditLogger;
+
+...
+
+public Product $product
+
+public function handle(AuditLogger $logger): void
+{
+    $logger->record('Something happened');
+    $logger->record('Something happened against a resource', $this->product);
+}
+```
+
+**Statically**
+
+An alternative and more direct approach is to statically call the AuditLogger.
+
+```php
+use App\Models\Product;
+use BradieTilley\AuditLogs\AuditLogger;
+
+...
+
+public Product $product
+
+public function handle(): void
+{
+    AuditLogger::write('Something happened');
+    AuditLogger::write('Something happened against a resource', $this->product);
+}
+```
+
+### Unique Logs → Logging once per request
+
+Sometimes you may wish to avoid multiple of the same log from being written in the same request lifecycle. To do this, simply use the `->recordOne()` or `::writeOnce()` methods on the audit logger. Note that the model *and* action serve as a unique key for the "once" tracking.
+
+```php
+    AuditLogger::writeOnce('Something happened'); // First log written
+    AuditLogger::writeOnce('Something happened'); // No log was written
+
+    AuditLogger::writeOnce('Something happened', $this->product); // Second log written
+    AuditLogger::writeOnce('Something happened', $this->product); // No log was written
+```
+
+### Pausing Logs → Temporarily disable logs
+
+Sometimes you might want to temporarily disable the logs. This can be achieved via the `withoutLogging` static helper method.
+
+```php
+function doSomething() {
+    AuditLog::write('Something happened');
+}
+
+AuditLogger::withoutLogging(fn () => doSomething());
+AuditLogger::withoutLogging(doSomething(...));
+
+// `doSomething` was run twice, however no audit logs were written!
+```
+
+### Custom Logs → Customising the entire audit logger logic
 
 The `BradieTilley\AuditLogs\AuditLogger` singleton can be swapped out to a custom class of your choosing, if you wish to customise the data that gets logged.
 
-### Logs → Metadata
+### Metadata → Details
 
 In the `BradieTilley\AuditLogs\AuditLogger` singleton, metadata is appended to logs. Only some of this metadata makes its way into the database, but all of the metadata makes its way into the log stream.
 

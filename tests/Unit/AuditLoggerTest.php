@@ -8,16 +8,16 @@ test('audit logger can record logs once if specified to not log twice', function
     $logger = AuditLogger::make();
     expect(AuditLog::count())->toBe(0);
 
-    $logger->recordOnce(null, 'test');
+    $logger->recordOnce('test');
     expect(AuditLog::count())->toBe(1);
 
-    $logger->recordOnce(null, 'test2');
+    $logger->recordOnce('test2');
     expect(AuditLog::count())->toBe(2);
 
-    $logger->recordOnce(null, 'test2');
+    $logger->recordOnce('test2');
     expect(AuditLog::count())->toBe(2); // already logged
 
-    $logger->recordOnce(null, 'test3');
+    $logger->recordOnce('test3');
     expect(AuditLog::count())->toBe(3);
 
     /**
@@ -35,16 +35,16 @@ test('audit logger can record logs once if specified to not log twice', function
     ]));
     expect(AuditLog::count())->toBe(3);
 
-    $logger->recordOnce(null, 'test');
+    $logger->recordOnce('test');
     expect(AuditLog::count())->toBe(3); // already logged
 
-    $logger->recordOnce($user1, 'test');
+    $logger->recordOnce('test', $user1);
     expect(AuditLog::count())->toBe(4);
 
-    $logger->recordOnce($user1, 'test');
+    $logger->recordOnce('test', $user1);
     expect(AuditLog::count())->toBe(4); // already logged
 
-    $logger->recordOnce($user2, 'test');
+    $logger->recordOnce('test', $user2);
     expect(AuditLog::count())->toBe(5);
 });
 
@@ -55,23 +55,23 @@ test('audit logger can skip logging', function () {
 
     AuditLogger::withoutLogging(function () {
         expect(AuditLogger::isWithoutLogging())->toBe(true);
-        AuditLogger::write(null, 'Test');
+        AuditLogger::write('Test');
         expect(AuditLogger::isWithoutLogging())->toBe(true);
 
         AuditLogger::withoutLogging(function () {
             expect(AuditLogger::isWithoutLogging())->toBe(true);
-            AuditLogger::write(null, 'Test');
+            AuditLogger::write('Test');
             expect(AuditLogger::isWithoutLogging())->toBe(true);
         });
 
         expect(AuditLogger::isWithoutLogging())->toBe(true);
-        AuditLogger::write(null, 'Test');
+        AuditLogger::write('Test');
         expect(AuditLogger::isWithoutLogging())->toBe(true);
     });
 
     expect(AuditLog::count())->toBe(0);
     expect(AuditLogger::isWithoutLogging())->toBe(false);
 
-    AuditLogger::write(null, 'Test');
+    AuditLogger::write('Test');
     expect(AuditLog::count())->toBe(1);
 });

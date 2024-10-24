@@ -16,7 +16,7 @@ class HasAuditLogsObserver
 
     public function created(Model&WithAuditLogs $model): void
     {
-        $this->logger->record($model, action: "{$this->name($model)} created");
+        $this->logger->record("{$this->name($model)} created", $model);
     }
 
     public function updated(Model&WithAuditLogs $model): void
@@ -27,7 +27,7 @@ class HasAuditLogsObserver
             return;
         }
 
-        $this->logger->record($model, action: "{$this->name($model)} updated", data: [
+        $this->logger->record("{$this->name($model)} updated", $model, data: [
             'changes' => $changes,
         ]);
     }
@@ -38,17 +38,17 @@ class HasAuditLogsObserver
             return;
         }
 
-        $this->logger->record($model, action: "{$this->name($model)} deleted");
+        $this->logger->record("{$this->name($model)} deleted", $model);
     }
 
     public function forceDeleted(Model&WithAuditLogs $model): void
     {
-        $this->logger->record($model, action: "{$this->name($model)} force deleted");
+        $this->logger->record("{$this->name($model)} force deleted", $model);
     }
 
     public function restored(Model&WithAuditLogs $model): void
     {
-        $this->logger->record($model, action: "{$this->name($model)} restored");
+        $this->logger->record("{$this->name($model)} restored", $model);
     }
 
     protected function name(Model $model): string

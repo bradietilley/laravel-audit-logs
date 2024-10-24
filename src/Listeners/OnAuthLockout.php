@@ -11,7 +11,7 @@ class OnAuthLockout extends AuditListener
 
     public function handle(Lockout $event): void
     {
-        $this->recorder->record(null, static::ACTION, AuditLog::TYPE_AUDIT, [
+        $this->recorder->record(static::ACTION, null, AuditLog::TYPE_AUDIT, [
         ]);
     }
 }

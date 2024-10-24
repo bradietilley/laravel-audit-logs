@@ -21,7 +21,7 @@ class OnAuthPasswordReset extends AuditListener
 
         $field = AuditLogConfig::getUserIdentifier();
 
-        $this->recorder->record($user, static::ACTION, AuditLog::TYPE_AUDIT, [
+        $this->recorder->record(static::ACTION, $user, AuditLog::TYPE_AUDIT, [
             'event' => [
                 $field => $user->getAttribute($field),
             ],

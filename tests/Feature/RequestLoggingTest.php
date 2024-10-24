@@ -29,7 +29,7 @@ test('requests are logged', function (bool $runningViaConsole) {
         'message' => $event->message,
         'context' => $event->context,
     ]);
-    $this->get('/request-logging-test/'.$user->id);
+    $this->get('/request-logging-test/'.$user->id)->assertOk();
 
     expect(AuditLog::count())->toBe(1);
     $auditLog = AuditLog::first();

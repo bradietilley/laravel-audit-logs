@@ -28,7 +28,7 @@ class AuditLogger
     /**
      * A cache of events that have already run that should only log once.
      *
-     * @var array<string, mixed>
+     * @var array<string, AuditLog|null>
      */
     protected array $once = [];
 
@@ -85,9 +85,21 @@ class AuditLogger
      *
      * @param array<mixed> $data
      */
-    public static function write(?Model $model, string $action, string $type = AuditLog::TYPE_ACTIVITY, array $data = []): ?AuditLog
+    public static function write(string $action, ?Model $model = null, string $type = AuditLog::TYPE_ACTIVITY, array $data = []): ?AuditLog
     {
-        return static::make()->record($model, $action, $type, $data);
+        return static::make()->record($action, $model, $type, $data);
+    }
+
+    /**
+     * Record an audit log once this request lifecycle, unique by model and action.
+     *
+     * Static shortcut to `recordOnce()`
+     *
+     * @param array<mixed> $data
+     */
+    public static function writeOnce(string $action, ?Model $model = null, string $type = AuditLog::TYPE_ACTIVITY, array $data = []): ?AuditLog
+    {
+        return static::make()->recordOnce($action, $model, $type, $data);
     }
 
     /**
@@ -95,7 +107,7 @@ class AuditLogger
      *
      * @param array<mixed> $data
      */
-    public function record(?Model $model, string $action, string $type = AuditLog::TYPE_ACTIVITY, array $data = []): ?AuditLog
+    public function record(string $action, ?Model $model = null, string $type = AuditLog::TYPE_ACTIVITY, array $data = []): ?AuditLog
     {
         if (static::isWithoutLogging()) {
             return null;
@@ -127,11 +139,11 @@ class AuditLogger
      *
      * @param array<mixed>|(Closure(): array<mixed>) $data
      */
-    public function recordOnce(?Model $model, string $action, string $type = AuditLog::TYPE_ACTIVITY, array|Closure $data = []): mixed
+    public function recordOnce(string $action, ?Model $model = null, string $type = AuditLog::TYPE_ACTIVITY, array|Closure $data = []): ?AuditLog
     {
         $key = $model?->getMorphClass().':'.$model?->getKey().':'.$action;
 
-        return $this->once[$key] ??= $this->record($model, $action, $type, value($data));
+        return $this->once[$key] ??= $this->record($action, $model, $type, value($data));
     }
 
     /**
