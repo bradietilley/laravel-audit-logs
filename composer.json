@@ -12,8 +12,8 @@
     "authors": [
         {
             "name": "Bradie Tilley",
-            "email": "bradietilley@gmail.com",
-            "role": "Developer"
+            "homepage": "https://github.com/bradietilley",
+            "email": "bradietilley@gmail.com"
         }
     ],
     "require": {
