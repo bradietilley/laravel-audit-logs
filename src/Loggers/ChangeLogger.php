@@ -60,7 +60,7 @@ class ChangeLogger
 
                 if (is_string($value) || is_int($value)) {
                     if ($this->isDateField($field) || $this->isDateTimeField($field)) {
-                        $value = CarbonImmutable::parse($value);
+                        $value = CarbonImmutable::parse((string) $value);
                     } elseif ($this->isEnumField($field)) {
                         /** @var class-string<BackedEnum> $enumClass */
                         $enumClass = $this->casts[$field];
