@@ -82,6 +82,8 @@ class AuditLogger
      * Record an audit log.
      *
      * Static shortcut to `record()`
+     *
+     * @param array<mixed> $data
      */
     public static function write(?Model $model, string $action, string $type = AuditLog::TYPE_ACTIVITY, array $data = []): ?AuditLog
     {
