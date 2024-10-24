@@ -1,5 +1,11 @@
 # Audit Logs
 
+A simple yet flexible implementation of Audit Logging in Laravel.
+
+![Static Analysis](https://github.com/bradietilley/laravel-audit-logs/actions/workflows/static.yml/badge.svg)
+![Tests](https://github.com/bradietilley/laravel-audit-logs/actions/workflows/tests.yml/badge.svg)
+![Min Laravel Version](https://img.shields.io/badge/Min%20Laravel%20Version-11-F9322C)
+
 Keep an audit record of all modifications made to your eloquent models.
 
 Whether you're tracking security events, other notable events, resource changes, or just everyday actions of users, all of these changes can be described as _Audit Logs_. Use cases of this package are:
