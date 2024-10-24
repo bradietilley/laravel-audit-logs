@@ -12,6 +12,7 @@ return new class () extends Migration {
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
+            $table->softDeletes();
             $table->foreignIdFor(User::class, 'foreign_key_id')->nullable();
             $table->integer('integer_field')->default(0);
             $table->decimal('decimal_field', 9, 2)->default(0);
@@ -30,15 +31,7 @@ return new class () extends Migration {
     public function down(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn([
-                'integer_field',
-                'decimal_field',
-                'string_field',
-                'date_field',
-                'datetime_field',
-                'enum_field',
-                'array_field',
-            ]);
+            //
         });
     }
 };

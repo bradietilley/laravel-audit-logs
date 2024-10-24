@@ -1,11 +1,14 @@
 <?php
 
+use BradieTilley\AuditLogs\AuditLogger;
 use BradieTilley\AuditLogs\Models\AuditLog;
 use Illuminate\Log\Events\MessageLogged;
 use Illuminate\Support\Facades\Event;
 use Workbench\App\Models\User;
 
-test('requests are logged', function () {
+test('requests are logged', function (bool $runningViaConsole) {
+    AuditLogger::make()->setRunningInConsole($runningViaConsole);
+
     $admin = User::create([
         'name' => 'Admin',
         'email' => 'admin@example.org',
@@ -61,30 +64,39 @@ test('requests are logged', function () {
         'type' => 'activity',
     ]);
 
+    $context = [
+        'log' => [
+            'id' => $auditLog->id,
+            'ulid' => $auditLog->ulid,
+        ],
+        'request' => [
+            'ip' => '127.0.0.1',
+            'route' => 'request-logging-test-route',
+            'path' => 'http://localhost',
+            'middleware' => [
+                'web',
+            ],
+            'user_agent' => 'Symfony',
+        ],
+        'user' => [
+            'id' => $admin->id,
+            'email' => $admin->email,
+            'name' => $admin->name,
+        ],
+        'data' => [],
+    ];
+
+    if ($runningViaConsole) {
+        unset($context['request']);
+    }
+
     expect($logs->all())->toBe([
         [
             'message' => 'Done something',
-            'context' => [
-                'log' => [
-                    'id' => $auditLog->id,
-                    'ulid' => $auditLog->ulid,
-                ],
-                'request' => [
-                    'ip' => '127.0.0.1',
-                    'route' => 'request-logging-test-route',
-                    'path' => 'http://localhost',
-                    'middleware' => [
-                        'web',
-                    ],
-                    'user_agent' => 'Symfony',
-                ],
-                'user' => [
-                    'id' => $admin->id,
-                    'email' => $admin->email,
-                    'name' => $admin->name,
-                ],
-                'data' => [],
-            ],
+            'context' => $context,
         ],
     ]);
-});
+})->with([
+    'running via console' => true,
+    'running via web' => false,
+]);

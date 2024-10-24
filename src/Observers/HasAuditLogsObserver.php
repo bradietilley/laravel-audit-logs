@@ -34,6 +34,10 @@ class HasAuditLogsObserver
 
     public function deleted(Model&WithAuditLogs $model): void
     {
+        if ($model->hasAttribute('deleted_at') && $model->getAttribute('deleted_at') === null) {
+            return;
+        }
+
         $this->logger->record($model, action: "{$this->name($model)} deleted");
     }
 

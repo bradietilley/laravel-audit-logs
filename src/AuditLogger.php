@@ -3,6 +3,7 @@
 namespace BradieTilley\AuditLogs;
 
 use BradieTilley\AuditLogs\Models\AuditLog;
+use Closure;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\User;
 use Illuminate\Http\Request;
@@ -17,8 +18,27 @@ class AuditLogger
 {
     public LoggerInterface $logger;
 
-    /** @var array<string, mixed> */
+    /**
+     * A cache of resolved data points that don't require resolving more than once per request lifecycle.
+     *
+     * @var array<string, mixed>
+     */
     protected array $cache = [];
+
+    /**
+     * A cache of events that have already run that should only log once.
+     *
+     * @var array<string, mixed>
+     */
+    protected array $once = [];
+
+    /**
+     * Number of levels of nested `withoutLogging` events.
+     *
+     * Each invocation of `withoutLogging` will increase this number during
+     * the callback and reduce the number afterwards.
+     */
+    protected static int $withoutLogging = 0;
 
     public function __construct(public readonly Request $request)
     {
@@ -37,12 +57,48 @@ class AuditLogger
     }
 
     /**
+     * Run the callback without logging anything
+     */
+    public static function withoutLogging(Closure $callback): mixed
+    {
+        try {
+            static::$withoutLogging++;
+
+            return $callback();
+        } finally {
+            static::$withoutLogging--;
+        }
+    }
+
+    /**
+     * Check if there's a `withoutLogging` callback running currently
+     */
+    public static function isWithoutLogging(): bool
+    {
+        return static::$withoutLogging > 0;
+    }
+
+    /**
+     * Record an audit log.
+     *
+     * Static shortcut to `record()`
+     */
+    public static function write(?Model $model, string $action, string $type = AuditLog::TYPE_ACTIVITY, array $data = []): ?AuditLog
+    {
+        return static::make()->record($model, $action, $type, $data);
+    }
+
+    /**
      * Record an audit log
      *
      * @param array<mixed> $data
      */
-    public function record(?Model $model, string $action, string $type = AuditLog::TYPE_ACTIVITY, array $data = []): AuditLog
+    public function record(?Model $model, string $action, string $type = AuditLog::TYPE_ACTIVITY, array $data = []): ?AuditLog
     {
+        if (static::isWithoutLogging()) {
+            return null;
+        }
+
         $class = AuditLogConfig::getAuditLogModel();
 
         $log = new $class();
@@ -62,6 +118,18 @@ class AuditLogger
         $this->writeLog($log, $data);
 
         return $log;
+    }
+
+    /**
+     * Record an audit log once this request lifecycle, unique by model and action.
+     *
+     * @param array<mixed>|(Closure(): array<mixed>) $data
+     */
+    public function recordOnce(?Model $model, string $action, string $type = AuditLog::TYPE_ACTIVITY, array|Closure $data = []): mixed
+    {
+        $key = $model?->getMorphClass().':'.$model?->getKey().':'.$action;
+
+        return $this->once[$key] ??= $this->record($model, $action, $type, value($data));
     }
 
     /**
@@ -91,10 +159,14 @@ class AuditLogger
             'data' => $data,
         ];
 
+        if ($this->runningInConsole()) {
+            unset($data['request']);
+        }
+
         $this->logger->info($log->action, $data);
     }
 
-    public function setRunningInConsole(bool $runningInConsole): void
+    public function setRunningInConsole(bool $runningInConsole = true): void
     {
         $this->cache['runningInConsole'] = $runningInConsole;
     }
