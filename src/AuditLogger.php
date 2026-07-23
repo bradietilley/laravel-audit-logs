@@ -44,13 +44,18 @@ class AuditLogger implements AuditLoggerContract
      */
     protected static int $withoutLogging = 0;
 
-    public function __construct(public readonly Request $request)
+    public function __construct()
     {
         $channel = AuditLogConfig::getLogChannel();
 
         $this->logger = filled($channel)
             ? Log::channel($channel)
             : new NullLogger;
+    }
+
+    protected function request(): Request
+    {
+        return app(Request::class);
     }
 
     /**
@@ -252,14 +257,12 @@ class AuditLogger implements AuditLoggerContract
 
     protected function route(): ?RoutingRoute
     {
-        /** @phpstan-ignore-next-line */
-        return $this->cache[__FUNCTION__] ??= Route::current();
+        return Route::current();
     }
 
     protected function getRequestIp(): ?string
     {
-        /** @phpstan-ignore-next-line */
-        return $this->cache[__FUNCTION__] ??= $this->request->ip();
+        return $this->request()->ip();
     }
 
     protected function getRequestRoute(): ?string
@@ -268,12 +271,11 @@ class AuditLogger implements AuditLoggerContract
             return null;
         }
 
-        /** @phpstan-ignore-next-line */
-        return $this->cache[__FUNCTION__] ??= $this->route()?->getName();
+        return $this->route()?->getName();
     }
 
     /**
-     * @return array<int, string>
+     * @return array<int, string>|null
      */
     protected function getRequestMiddleware(): ?array
     {
@@ -281,8 +283,7 @@ class AuditLogger implements AuditLoggerContract
             return null;
         }
 
-        /** @phpstan-ignore-next-line */
-        return $this->cache[__FUNCTION__] ??= $this->route()?->gatherMiddleware();
+        return $this->route()?->gatherMiddleware();
     }
 
     protected function getRequestPath(): ?string
@@ -291,8 +292,7 @@ class AuditLogger implements AuditLoggerContract
             return null;
         }
 
-        /** @phpstan-ignore-next-line */
-        return $this->cache[__FUNCTION__] ??= $this->request->fullUrl();
+        return $this->request()->fullUrl();
     }
 
     protected function getRequestUserAgent(): ?string
@@ -301,7 +301,6 @@ class AuditLogger implements AuditLoggerContract
             return null;
         }
 
-        /** @phpstan-ignore-next-line */
-        return $this->cache[__FUNCTION__] ??= $this->request->header('User-Agent');
+        return $this->request()->header('User-Agent');
     }
 }
