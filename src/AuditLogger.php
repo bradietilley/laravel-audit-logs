@@ -2,6 +2,8 @@
 
 namespace BradieTilley\AuditLogs;
 
+use BradieTilley\AuditLogs\Contracts\AuditLogger as AuditLoggerContract;
+use BradieTilley\AuditLogs\Events\AuditLogRecorded;
 use BradieTilley\AuditLogs\Models\AuditLog;
 use Closure;
 use Illuminate\Database\Eloquent\Model;
@@ -10,12 +12,13 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Route as RoutingRoute;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
-class AuditLogger
+class AuditLogger implements AuditLoggerContract
 {
     public LoggerInterface $logger;
 
@@ -53,10 +56,10 @@ class AuditLogger
     /**
      * Static constructor
      */
-    public static function make(): AuditLogger
+    public static function make(): AuditLoggerContract
     {
-        /** @var AuditLogger $instance */
-        $instance = app(AuditLogger::class);
+        /** @var AuditLoggerContract $instance */
+        $instance = app(AuditLoggerContract::class);
 
         return $instance;
     }
@@ -136,6 +139,8 @@ class AuditLogger
 
         $this->writeLog($log, $data);
 
+        Event::dispatch(new AuditLogRecorded($log));
+
         return $log;
     }
 
@@ -158,7 +163,7 @@ class AuditLogger
      */
     protected function writeLog(AuditLog $log, array $data): void
     {
-        if (! filled(AuditLogConfig::getLogChannel())) {
+        if (AuditLogConfig::getLogChannel() === null) {
             return;
         }
 

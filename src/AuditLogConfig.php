@@ -2,6 +2,7 @@
 
 namespace BradieTilley\AuditLogs;
 
+use BradieTilley\AuditLogs\Loggers\ChangeLogger;
 use BradieTilley\AuditLogs\Models\AuditLog;
 use BradieTilley\AuditLogs\Observers\HasAuditLogsObserver;
 
@@ -43,12 +44,25 @@ class AuditLogConfig
     }
 
     /**
+     * Get the change logger class to use
+     *
+     * @return class-string<ChangeLogger>
+     */
+    public static function getChangeLoggerClass(): string
+    {
+        /** @phpstan-ignore-next-line */
+        return static::get('classes.change_logger', ChangeLogger::class);
+    }
+
+    /**
      * Get the log channel to write to (if specified)
      */
     public static function getLogChannel(): ?string
     {
-        /** @phpstan-ignore-next-line */
-        return static::get('log_channel');
+        /** @var ?string $channel */
+        $channel = static::get('log_channel');
+
+        return filled($channel) ? $channel : null;
     }
 
     /**
@@ -59,6 +73,17 @@ class AuditLogConfig
     {
         /** @phpstan-ignore-next-line */
         return static::get('user_identifier');
+    }
+
+    /**
+     * Authentication event → listener map. A false/null listener disables the event.
+     *
+     * @return array<class-string, class-string|false|null>
+     */
+    public static function getAuthEvents(): array
+    {
+        /** @phpstan-ignore-next-line */
+        return static::get('auth_events', []);
     }
 
     /**

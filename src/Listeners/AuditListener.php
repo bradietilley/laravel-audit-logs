@@ -2,7 +2,7 @@
 
 namespace BradieTilley\AuditLogs\Listeners;
 
-use BradieTilley\AuditLogs\AuditLogger;
+use BradieTilley\AuditLogs\Contracts\AuditLogger;
 
 abstract class AuditListener
 {

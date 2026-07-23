@@ -32,8 +32,10 @@ class ChangeLogger
      */
     public static function make(Model $model): self
     {
+        $class = AuditLogConfig::getChangeLoggerClass();
+
         /** @var static $instance */
-        $instance = app(self::class, [
+        $instance = app($class, [
             'model' => $model,
         ]);
 

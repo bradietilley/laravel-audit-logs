@@ -2,6 +2,7 @@
 
 namespace BradieTilley\AuditLogs;
 
+use BradieTilley\AuditLogs\Contracts\AuditLogger as AuditLoggerContract;
 use BradieTilley\AuditLogs\Listeners\OnAuthAttempting;
 use BradieTilley\AuditLogs\Listeners\OnAuthAuthenticated;
 use BradieTilley\AuditLogs\Listeners\OnAuthCurrentDeviceLogout;
@@ -32,6 +33,11 @@ use Spatie\LaravelPackageTools\PackageServiceProvider;
 
 class AuditLogServiceProvider extends PackageServiceProvider
 {
+    /**
+     * Default authentication event → listener map.
+     *
+     * @var array<class-string, class-string>
+     */
     public const EVENTS = [
         Attempting::class => OnAuthAttempting::class,
         Authenticated::class => OnAuthAuthenticated::class,
@@ -58,8 +64,13 @@ class AuditLogServiceProvider extends PackageServiceProvider
     public function packageRegistered(): void
     {
         $this->app->singleton(AuditLogger::class, AuditLogger::class);
+        $this->app->alias(AuditLogger::class, AuditLoggerContract::class);
 
-        foreach (static::EVENTS as $event => $listener) {
+        foreach (AuditLogConfig::getAuthEvents() as $event => $listener) {
+            if ($listener === null || $listener === false) {
+                continue;
+            }
+
             Event::listen($event, $listener);
         }
     }

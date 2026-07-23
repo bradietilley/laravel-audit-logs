@@ -2,8 +2,8 @@
 
 namespace BradieTilley\AuditLogs\Observers;
 
-use BradieTilley\AuditLogs\AuditLogger;
 use BradieTilley\AuditLogs\AuditLogUtil;
+use BradieTilley\AuditLogs\Contracts\AuditLogger;
 use BradieTilley\AuditLogs\Contracts\WithAuditLogs;
 use BradieTilley\AuditLogs\Loggers\ChangeLogger;
 use Illuminate\Database\Eloquent\Model;
