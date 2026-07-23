@@ -14,7 +14,7 @@ use Throwable;
 
 class OnAuthAttempting extends AuditListener
 {
-    public const ACTION = 'Login Attempt';
+    public const string ACTION = 'Login Attempt';
 
     public function handle(Attempting $event): void
     {
@@ -39,7 +39,7 @@ class OnAuthAttempting extends AuditListener
 
         $field = AuditLogConfig::getUserIdentifier();
 
-        $this->recorder->record(static::ACTION, $user, AuditLog::TYPE_AUDIT, [
+        $this->recorder->record(self::ACTION, $user, AuditLog::TYPE_AUDIT, [
             'event' => [
                 'guard' => $event->guard,
                 'remember' => $event->remember,

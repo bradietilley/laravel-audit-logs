@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class OnAuthRegistered extends AuditListener
 {
-    public const ACTION = 'User registered';
+    public const string ACTION = 'User registered';
 
     public function handle(Registered $event): void
     {
@@ -21,7 +21,7 @@ class OnAuthRegistered extends AuditListener
 
         $field = AuditLogConfig::getUserIdentifier();
 
-        $this->recorder->record(static::ACTION, $user, AuditLog::TYPE_AUDIT, [
+        $this->recorder->record(self::ACTION, $user, AuditLog::TYPE_AUDIT, [
             'event' => [
                 $field => $user->getAttribute($field),
             ],

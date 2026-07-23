@@ -50,7 +50,7 @@ class AuditLogger implements AuditLoggerContract
 
         $this->logger = filled($channel)
             ? Log::channel($channel)
-            : new NullLogger;
+            : new NullLogger();
     }
 
     protected function request(): Request
@@ -156,7 +156,13 @@ class AuditLogger implements AuditLoggerContract
      */
     public function recordOnce(string $action, ?Model $model = null, string $type = AuditLog::TYPE_ACTIVITY, array|Closure $data = []): ?AuditLog
     {
-        $key = $model?->getMorphClass().':'.$model?->getKey().':'.$action;
+        $modelKey = $model?->getKey();
+        $key = sprintf(
+            '%s:%s:%s',
+            $model?->getMorphClass() ?? '',
+            is_scalar($modelKey) ? (string) $modelKey : '',
+            $action,
+        );
 
         return $this->once[$key] ??= $this->record($action, $model, $type, value($data));
     }
@@ -283,7 +289,21 @@ class AuditLogger implements AuditLoggerContract
             return null;
         }
 
-        return $this->route()?->gatherMiddleware();
+        $middleware = $this->route()?->gatherMiddleware();
+
+        if ($middleware === null) {
+            return null;
+        }
+
+        $strings = [];
+
+        foreach ($middleware as $value) {
+            if (is_string($value)) {
+                $strings[] = $value;
+            }
+        }
+
+        return $strings;
     }
 
     protected function getRequestPath(): ?string
@@ -301,6 +321,8 @@ class AuditLogger implements AuditLoggerContract
             return null;
         }
 
-        return $this->request()->header('User-Agent');
+        $agent = $this->request()->header('User-Agent');
+
+        return is_string($agent) ? $agent : null;
     }
 }

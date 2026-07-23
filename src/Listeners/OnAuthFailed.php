@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class OnAuthFailed extends AuditListener
 {
-    public const ACTION = 'Login failed';
+    public const string ACTION = 'Login failed';
 
     public function handle(Failed $event): void
     {
@@ -21,7 +21,7 @@ class OnAuthFailed extends AuditListener
 
         $field = AuditLogConfig::getUserIdentifier();
 
-        $this->recorder->record(static::ACTION, $user, AuditLog::TYPE_AUDIT, [
+        $this->recorder->record(self::ACTION, $user, AuditLog::TYPE_AUDIT, [
             'event' => [
                 'guard' => $event->guard,
                 $field => $event->credentials[$field] ?? $user?->getAttribute($field),

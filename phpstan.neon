@@ -2,3 +2,7 @@ parameters:
   level: max
   paths:
     - src/
+  ignoreErrors:
+    -
+      identifier: trait.unused
+      path: src/Concerns/HasAuditLogs.php

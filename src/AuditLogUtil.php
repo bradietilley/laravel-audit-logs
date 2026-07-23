@@ -6,7 +6,7 @@ use Illuminate\Support\Str;
 
 class AuditLogUtil
 {
-    public const DEFAULT_FIELD_NAMES = [
+    public const array DEFAULT_FIELD_NAMES = [
         'id' => 'ID',
         'ip' => 'IP',
         'uuid' => 'UUID',
@@ -29,7 +29,12 @@ class AuditLogUtil
     public static function clear(): void
     {
         static::$modelNames = [];
-        static::$fieldNames = static::DEFAULT_FIELD_NAMES;
+        static::$fieldNames = [
+            'id' => 'ID',
+            'ip' => 'IP',
+            'uuid' => 'UUID',
+            'ulid' => 'ULID',
+        ];
     }
 
     /**

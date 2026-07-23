@@ -7,11 +7,11 @@ use Illuminate\Auth\Events\Lockout;
 
 class OnAuthLockout extends AuditListener
 {
-    public const ACTION = 'Request locked out';
+    public const string ACTION = 'Request locked out';
 
     public function handle(Lockout $event): void
     {
-        $this->recorder->record(static::ACTION, null, AuditLog::TYPE_AUDIT, [
+        $this->recorder->record(self::ACTION, null, AuditLog::TYPE_AUDIT, [
         ]);
     }
 }

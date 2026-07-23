@@ -17,14 +17,22 @@ use ReflectionClass;
  */
 class ChangeLogger
 {
-    protected const ENCODING = 'UTF-8';
+    protected const string ENCODING = 'UTF-8';
 
     /** @var array<string, mixed> */
     public array $casts = [];
 
     public function __construct(public readonly Model $model)
     {
-        $this->casts = $this->model->getCasts();
+        $casts = [];
+
+        foreach ($this->model->getCasts() as $field => $cast) {
+            if (is_string($field)) {
+                $casts[$field] = $cast;
+            }
+        }
+
+        $this->casts = $casts;
     }
 
     /**
@@ -118,7 +126,7 @@ class ChangeLogger
                         $readable = call_user_func([$value, 'name']);
                     }
 
-                    return "{$label} set to {$readable}";
+                    return "{$label} set to ".(is_scalar($readable) ? (string) $readable : $value->value);
                 }
 
                 return "{$label} updated";

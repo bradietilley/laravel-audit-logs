@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class OnAuthPasswordReset extends AuditListener
 {
-    public const ACTION = 'Password reset successful';
+    public const string ACTION = 'Password reset successful';
 
     public function handle(PasswordReset $event): void
     {
@@ -21,7 +21,7 @@ class OnAuthPasswordReset extends AuditListener
 
         $field = AuditLogConfig::getUserIdentifier();
 
-        $this->recorder->record(static::ACTION, $user, AuditLog::TYPE_AUDIT, [
+        $this->recorder->record(self::ACTION, $user, AuditLog::TYPE_AUDIT, [
             'event' => [
                 $field => $user->getAttribute($field),
             ],

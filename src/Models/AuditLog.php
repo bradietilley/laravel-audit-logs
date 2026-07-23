@@ -19,7 +19,7 @@ use Illuminate\Foundation\Auth\User;
  * @property-read string|int|null $user_id
  * @property-read string $action
  * @property-read ?string $ip
- * @property-read array $data
+ * @property-read array<mixed> $data
  *
  * @property-read Model $model
  * @property-read ?User $user

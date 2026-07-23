@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class OnAuthValidated extends AuditListener
 {
-    public const ACTION = 'Login validation successful';
+    public const string ACTION = 'Login validation successful';
 
     public function handle(Validated $event): void
     {
@@ -21,7 +21,7 @@ class OnAuthValidated extends AuditListener
 
         $field = AuditLogConfig::getUserIdentifier();
 
-        $this->recorder->record(static::ACTION, $user, AuditLog::TYPE_AUDIT, [
+        $this->recorder->record(self::ACTION, $user, AuditLog::TYPE_AUDIT, [
             'event' => [
                 'guard' => $event->guard,
                 $field => $user->getAttribute($field),

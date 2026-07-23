@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class OnAuthVerified extends AuditListener
 {
-    public const ACTION = 'Email verification successful';
+    public const string ACTION = 'Email verification successful';
 
     public function handle(Verified $event): void
     {
@@ -21,7 +21,7 @@ class OnAuthVerified extends AuditListener
 
         $field = AuditLogConfig::getUserIdentifier();
 
-        $this->recorder->record(static::ACTION, $user, AuditLog::TYPE_AUDIT, [
+        $this->recorder->record(self::ACTION, $user, AuditLog::TYPE_AUDIT, [
             'event' => [
                 $field => $user->getAttribute($field),
             ],

@@ -9,7 +9,7 @@ use InvalidArgumentException;
 /**
  * Casts an IP address to and from binary format.
  *
- * @implements CastsAttributes<string|null, string|null>
+ * @implements CastsAttributes<string|null, mixed>
  */
 class IpAddressCast implements CastsAttributes
 {
@@ -20,12 +20,12 @@ class IpAddressCast implements CastsAttributes
      */
     public function get($model, string $key, $value, array $attributes): ?string
     {
-        if (empty($value)) {
+        if ($value === null || $value === '') {
             return null;
         }
 
         if (! is_string($value)) {
-            throw new InvalidArgumentException("IP address must be a string");
+            throw new InvalidArgumentException('IP address must be a string');
         }
 
         return inet_ntop($value) ?: null;
@@ -38,12 +38,12 @@ class IpAddressCast implements CastsAttributes
      */
     public function set($model, string $key, $value, array $attributes): ?string
     {
-        if (empty($value)) {
+        if ($value === null || $value === '') {
             return null;
         }
 
         if (! is_string($value)) {
-            throw new InvalidArgumentException("IP address must be a string");
+            throw new InvalidArgumentException('IP address must be a string');
         }
 
         return inet_pton($value) ?: null;

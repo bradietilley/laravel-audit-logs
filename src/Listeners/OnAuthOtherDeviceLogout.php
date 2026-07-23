@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class OnAuthOtherDeviceLogout extends AuditListener
 {
-    public const ACTION = 'Logout (other device) successful';
+    public const string ACTION = 'Logout (other device) successful';
 
     public function handle(OtherDeviceLogout $event): void
     {
@@ -21,7 +21,7 @@ class OnAuthOtherDeviceLogout extends AuditListener
 
         $field = AuditLogConfig::getUserIdentifier();
 
-        $this->recorder->record(static::ACTION, $user, AuditLog::TYPE_AUDIT, [
+        $this->recorder->record(self::ACTION, $user, AuditLog::TYPE_AUDIT, [
             'event' => [
                 'guard' => $event->guard,
                 $field => $user->getAttribute($field),
