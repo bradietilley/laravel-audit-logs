@@ -72,7 +72,7 @@ test('requests are logged', function (bool $runningViaConsole) {
         'request' => [
             'ip' => '127.0.0.1',
             'route' => 'request-logging-test-route',
-            'path' => 'http://localhost',
+            'path' => 'http://localhost/request-logging-test/'.$user->id,
             'middleware' => [
                 'web',
             ],

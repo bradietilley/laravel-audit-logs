@@ -25,7 +25,6 @@ abstract class TestCase extends TestbenchTestCase
     public function getEnvironmentSetUp($app)
     {
         $app['config']->set('auth.providers.users.model', User::class);
-        $app['config']->set('audit-logs.models.user', User::class);
 
         $app['config']->set('database.default', 'testbench');
         $app['config']->set('database.connections.testbench', [
@@ -33,6 +32,13 @@ abstract class TestCase extends TestbenchTestCase
             'database' => ':memory:',
             'prefix' => '',
         ]);
+
+        $app['config']->set('logging.channels.audit_logs', [
+            'driver' => 'single',
+            'path' => storage_path('logs/audit-logs.log'),
+            'level' => 'debug',
+        ]);
+        $app['config']->set('audit-logs.log_channel', 'audit_logs');
 
         $app['config']->set('app.key', Str::random(32));
     }
