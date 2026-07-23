@@ -21,7 +21,7 @@ return new class () extends Migration {
             ]);
             $table->text('action');
             $table->text('data');
-            $table->binary('ip', 16)->index();
+            $table->binary('ip', 16)->nullable()->index();
 
             $table->timestamp('created_at', 3);
         });

@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
 use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 
 class AuditLogger
 {
@@ -42,7 +43,11 @@ class AuditLogger
 
     public function __construct(public readonly Request $request)
     {
-        $this->logger = Log::channel(AuditLogConfig::getLogChannel());
+        $channel = AuditLogConfig::getLogChannel();
+
+        $this->logger = filled($channel)
+            ? Log::channel($channel)
+            : new NullLogger;
     }
 
     /**
@@ -153,6 +158,10 @@ class AuditLogger
      */
     protected function writeLog(AuditLog $log, array $data): void
     {
+        if (! filled(AuditLogConfig::getLogChannel())) {
+            return;
+        }
+
         $data = [
             'log' => [
                 'id' => $log->id,
@@ -215,7 +224,7 @@ class AuditLogger
         return $this->cache[__FUNCTION__] ??= $this->user()?->getMorphClass();
     }
 
-    protected function getUserId(): ?int
+    protected function getUserId(): int|string|null
     {
         /** @phpstan-ignore-next-line */
         return $this->cache[__FUNCTION__] ??= $this->user()?->getKey();
@@ -242,7 +251,7 @@ class AuditLogger
         return $this->cache[__FUNCTION__] ??= Route::current();
     }
 
-    protected function getRequestIp(): string
+    protected function getRequestIp(): ?string
     {
         /** @phpstan-ignore-next-line */
         return $this->cache[__FUNCTION__] ??= $this->request->ip();

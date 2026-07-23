@@ -23,11 +23,12 @@ return [
     ],
 
     /**
-     * The log channel to write to (if specified)
+     * The log channel to write to. Set to null to persist only to the database
+     * without writing to a log stream.
      *
      * @var ?string
      */
-    'log_channel' => 'audit_logs',
+    'log_channel' => null,
 
     /**
      * The attribute to include in all default authentication logs such as login,

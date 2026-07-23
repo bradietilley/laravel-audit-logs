@@ -2,12 +2,7 @@
 
 namespace Workbench\App\Models;
 
-use BradieTilley\AuditLogs\Concerns\HasAuditLogs;
-use BradieTilley\AuditLogs\Contracts\WithAuditLogs;
-
-class AdministrativeUser extends User implements WithAuditLogs
+class AdministrativeUser extends User
 {
-    use HasAuditLogs;
-
     protected $guarded = [];
 }

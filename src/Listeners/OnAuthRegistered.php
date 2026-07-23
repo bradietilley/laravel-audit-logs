@@ -23,7 +23,7 @@ class OnAuthRegistered extends AuditListener
 
         $this->recorder->record(static::ACTION, $user, AuditLog::TYPE_AUDIT, [
             'event' => [
-                $field => $event->credentials[$field] ?? $user->getAttribute($field),
+                $field => $user->getAttribute($field),
             ],
         ]);
     }

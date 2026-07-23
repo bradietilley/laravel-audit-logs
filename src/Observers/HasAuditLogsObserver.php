@@ -34,7 +34,9 @@ class HasAuditLogsObserver
 
     public function deleted(Model&WithAuditLogs $model): void
     {
-        if ($model->hasAttribute('deleted_at') && $model->getAttribute('deleted_at') === null) {
+        // SoftDeletes fires both `deleted` and `forceDeleted` on force delete —
+        // skip here so only `forceDeleted` records the log.
+        if (method_exists($model, 'isForceDeleting') && $model->isForceDeleting()) {
             return;
         }
 

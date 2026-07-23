@@ -101,7 +101,7 @@ class ChangeLogger
                 }
 
                 if ($value instanceof DateTimeInterface) {
-                    $format = $this->isDateField($field) ? AuditLogConfig::getDateFormat() : AuditLogConfig::GetDateTimeFormat();
+                    $format = $this->isDateField($field) ? AuditLogConfig::getDateFormat() : AuditLogConfig::getDateTimeFormat();
                     $value = $value->format($format);
 
                     return "{$label} set to {$value}";
