@@ -46,6 +46,8 @@ trait HasAuditLogs
 
     public static function bootHasAuditLogs(): void
     {
-        self::observe(AuditLogConfig::getObserverClass());
+        static::whenBooted(function () {
+            static::observe(AuditLogConfig::getObserverClass());
+        });
     }
 }

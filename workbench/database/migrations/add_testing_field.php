@@ -3,7 +3,6 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use Workbench\App\Models\User;
 
 return new class () extends Migration {
     /**
@@ -13,7 +12,7 @@ return new class () extends Migration {
     {
         Schema::table('users', function (Blueprint $table) {
             $table->softDeletes();
-            $table->foreignIdFor(User::class, 'foreign_key_id')->nullable();
+            $table->foreignId('foreign_key_id')->nullable();
             $table->integer('integer_field')->default(0);
             $table->decimal('decimal_field', 9, 2)->default(0);
             $table->boolean('boolean_field')->nullable();
