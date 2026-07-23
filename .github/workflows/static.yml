@@ -1,57 +1,58 @@
 name: Static Analysis
 
-on: ['push', 'pull_request']
+on:
+  push:
+    branches: [main]
+  pull_request:
 
 jobs:
   pint:
     runs-on: ubuntu-latest
-
-    name: Pint
+    name: Pint (code style)
 
     steps:
-
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: 8.3
-          extensions: zip
+          php-version: '8.3'
           tools: composer
           coverage: none
 
-      - name: Install PHP dependencies
-        uses: ramsey/composer-install@v1
+      - name: Install dependencies
+        uses: ramsey/composer-install@v3
         with:
           dependency-versions: highest
-          composer-options: "--prefer-dist"
 
       - name: Run Pint
-        run: vendor/bin/pint --test --ansi
+        run: composer format:check
 
   phpstan:
     runs-on: ubuntu-latest
+    name: PHPStan (${{ matrix.dependency-version }})
 
     strategy:
+      fail-fast: false
       matrix:
         dependency-version: [prefer-lowest, prefer-stable]
 
-    name: PHPStan (${{ matrix.dependency-version }})
-
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: 8.3
+          php-version: '8.3'
           tools: composer
           coverage: none
 
-      - name: Install Dependencies
-        run: composer update --${{ matrix.dependency-version }} --no-interaction --prefer-dist --no-progress --ansi
+      - name: Install dependencies
+        uses: ramsey/composer-install@v3
+        with:
+          dependency-versions: ${{ matrix.dependency-version }}
 
       - name: Run PHPStan
-        run: vendor/bin/phpstan analyse --no-progress --ansi
+        run: composer analyse
